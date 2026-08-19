@@ -1,0 +1,3497 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Hind Siliguri", "Noto Sans Bengali", "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", "Space Grotesk", sans-serif;
+  
+  --color-dragon-black: #050505;
+  --color-dragon-cyan: #00f2ff;
+  --color-dragon-gold: #ffcc00;
+  --color-dragon-purple: #7000ff;
+  --color-dragon-emerald: #00ff88;
+
+  @keyframes dragonOrbit360 {
+    from { transform: perspective(2000px) rotateY(0deg) rotateX(0deg); }
+    to { transform: perspective(2000px) rotateY(360deg) rotateX(0deg); }
+  }
+
+  @keyframes scan {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+}
+
+.animate-scan {
+  animation: scan 3s linear infinite;
+}
+
+.animate-\[dragonOrbit360_10s_linear_infinite\] {
+  animation: dragonOrbit360 10s linear infinite;
+}
+
+@layer base {
+  *, ::before, ::after {
+    box-sizing: border-box;
+  }
+  html {
+    font-size: 15px;
+    touch-action: manipulation;
+    -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  @media (min-width: 768px) {
+    html {
+      font-size: 16px;
+    }
+  }
+  body {
+    @apply bg-white dark:bg-dragon-black text-slate-900 dark:text-white font-sans antialiased overflow-x-hidden transition-colors;
+    width: 100%;
+    max-width: 100vw;
+    min-height: 100dvh;
+    @apply leading-relaxed;
+    letter-spacing: -0.01em;
+  }
+
+  html.dark body {
+    background: radial-gradient(circle at 50% -20%, #1a1a2e 0%, #050505 100%);
+  }
+
+  html:not(.dark) body, html.light body {
+    background: #ffffff;
+  }
+  
+  /* Standardize SVG icon alignment and smoothness */
+  svg {
+    display: inline-block;
+    vertical-align: middle;
+    shape-rendering: geometricPrecision;
+  }
+
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Prevent Mobile Auto-Zoom and Page Distortion on Input Focus */
+  @media (max-width: 767px) {
+    input,
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
+  }
+
+  /* Fix Browser Autofill Background & Text Color in Dark Mode */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus {
+    -webkit-text-fill-color: #ffffff !important;
+    -webkit-box-shadow: 0 0 0px 1000px #0d0e15 inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  html.light input:-webkit-autofill,
+  html.light input:-webkit-autofill:hover,
+  html.light input:-webkit-autofill:focus,
+  html.light textarea:-webkit-autofill,
+  html.light textarea:-webkit-autofill:hover,
+  html.light textarea:-webkit-autofill:focus,
+  html.light select:-webkit-autofill,
+  html.light select:-webkit-autofill:hover,
+  html.light select:-webkit-autofill:focus {
+    -webkit-text-fill-color: #1c1e21 !important;
+    -webkit-box-shadow: 0 0 0px 1000px #f0f2f5 inset !important;
+  }
+}
+
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-white/10 rounded-full;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-dragon-cyan/30;
+  }
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent;
+  }
+}
+
+.glass-card {
+  @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl;
+}
+
+/* ==========================================
+   PROFESSIONAL TYPOGRAPHY & SPACING FIXES
+   ========================================== */
+.custom-lp-wrapper,
+.custom-pro-wrapper {
+  font-family: "Hind Siliguri", "Noto Sans Bengali", "Plus Jakarta Sans", "Inter", sans-serif !important;
+  line-height: 1.6 !important;
+  letter-spacing: normal !important;
+  word-spacing: normal !important;
+}
+
+.custom-lp-wrapper *,
+.custom-pro-wrapper * {
+  font-family: inherit;
+}
+
+/* Eliminate unnatural letter spacing / wide character gaps on Bengali & public website text */
+.custom-lp-wrapper [class*="tracking-widest"],
+.custom-lp-wrapper [class*="tracking-[0.3em]"],
+.custom-lp-wrapper [class*="tracking-[0.2em]"],
+.custom-pro-wrapper [class*="tracking-widest"],
+.custom-pro-wrapper [class*="tracking-[0.3em]"],
+.custom-pro-wrapper [class*="tracking-[0.2em]"] {
+  letter-spacing: 0.015em !important;
+}
+
+.custom-lp-wrapper p,
+.custom-lp-wrapper span,
+.custom-lp-wrapper button,
+.custom-lp-wrapper h1,
+.custom-lp-wrapper h2,
+.custom-lp-wrapper h3,
+.custom-lp-wrapper h4,
+.custom-pro-wrapper p,
+.custom-pro-wrapper span,
+.custom-pro-wrapper button,
+.custom-pro-wrapper h1,
+.custom-pro-wrapper h2,
+.custom-pro-wrapper h3,
+.custom-pro-wrapper h4 {
+  word-spacing: normal !important;
+}
+
+.neon-glow {
+  box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+}
+
+.dragon-gradient {
+  background: linear-gradient(135deg, #00f2ff 0%, #7000ff 100%);
+}
+
+.animate-dragon-pulse {
+  animation: dragon-pulse 4s ease-in-out infinite;
+}
+
+.animate-scan {
+  animation: scan 2s linear infinite;
+}
+
+@keyframes scan {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-100%); }
+}
+
+@keyframes dragon-pulse {
+  0%, 100% { opacity: 0.8; filter: drop-shadow(0 0 20px rgba(0, 242, 255, 0.4)); }
+  50% { opacity: 1; filter: drop-shadow(0 0 40px rgba(0, 242, 255, 0.7)); }
+}
+
+@keyframes dragonOrbit360 {
+  from { transform: perspective(1500px) rotateY(0deg); }
+  to { transform: perspective(1500px) rotateY(360deg); }
+}
+
+/* ==========================================
+   PURE WHITE & BLACK BORDER & PINK TEXT LIGHT MODE STYLING
+   ========================================== */
+html.light body,
+html.light #root,
+html.light .min-h-screen,
+html.light .bg-dragon-black:not(.social-post-bg-theme):not(.msg-bubble-own):not(.msg-bubble-own *):not(.msg-bubble-other):not(.msg-bubble-other *):not(.order-card-container):not(.order-card-container *),
+html.light [class*="bg-dragon-black"]:not(.social-post-bg-theme):not(.msg-bubble-own):not(.msg-bubble-own *):not(.msg-bubble-other):not(.msg-bubble-other *):not(.order-card-container):not(.order-card-container *),
+html.light nav,
+html.light header.custom-pro-header,
+html.light .custom-lp-header,
+html.light .bg-\[\#121624\]:not(.social-post-bg-theme):not(.msg-bubble-own):not(.msg-bubble-own *):not(.msg-bubble-other):not(.msg-bubble-other *):not(.order-card-container):not(.order-card-container *),
+html.light [class*="bg-[#121624]"]:not(.social-post-bg-theme):not(.msg-bubble-own):not(.msg-bubble-own *):not(.msg-bubble-other):not(.msg-bubble-other *):not(.order-card-container):not(.order-card-container *),
+html.light .bg-slate-900:not(.social-post-bg-theme):not(.msg-bubble-own):not(.msg-bubble-own *):not(.msg-bubble-other):not(.msg-bubble-other *):not(.order-card-container):not(.order-card-container *),
+html.light .bg-slate-950:not(.social-post-bg-theme):not(.msg-bubble-own):not(.msg-bubble-own *):not(.msg-bubble-other):not(.msg-bubble-other *):not(.order-card-container):not(.order-card-container *),
+html.light .bg-zinc-900:not(.social-post-bg-theme):not(.msg-bubble-own):not(.msg-bubble-own *):not(.msg-bubble-other):not(.msg-bubble-other *):not(.order-card-container):not(.order-card-container *),
+html.light .bg-zinc-950:not(.social-post-bg-theme):not(.msg-bubble-own):not(.msg-bubble-own *):not(.msg-bubble-other):not(.msg-bubble-other *):not(.order-card-container):not(.order-card-container *),
+html.light .bg-black:not(.social-post-bg-theme):not(.tiktok-badge-container):not(.tiktok-auth-btn):not([data-brand="tiktok"]):not(.msg-bubble-own):not(.msg-bubble-own *):not(.msg-bubble-other):not(.msg-bubble-other *):not(.order-card-container):not(.order-card-container *),
+html.light [class*="bg-slate-9"]:not(.social-post-bg-theme):not(.msg-bubble-own):not(.msg-bubble-own *):not(.msg-bubble-other):not(.msg-bubble-other *):not(.order-card-container):not(.order-card-container *),
+html.light [class*="bg-zinc-9"]:not(.social-post-bg-theme):not(.msg-bubble-own):not(.msg-bubble-own *):not(.msg-bubble-other):not(.msg-bubble-other *):not(.order-card-container):not(.order-card-container *),
+html.light [class*="bg-black"]:not(.social-post-bg-theme):not(.tiktok-badge-container):not(.tiktok-auth-btn):not([data-brand="tiktok"]):not(.msg-bubble-own):not(.msg-bubble-own *):not(.msg-bubble-other):not(.msg-bubble-other *):not(.order-card-container):not(.order-card-container *) {
+  background-color: #ffffff !important;
+  color: #1c1e21 !important;
+}
+
+/* Navigation & Header Light Mode Enhancements */
+html.light nav,
+html.light header.custom-pro-header,
+html.light .custom-lp-header {
+  background-color: #ffffff !important;
+  border-bottom: 2px solid #000000 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light nav .font-display,
+html.light header .font-display,
+html.light nav span.font-black {
+  color: #db2777 !important; /* Vivid pink text */
+  font-weight: 900 !important;
+}
+
+html.light nav .text-dragon-cyan,
+html.light header .text-dragon-cyan,
+html.light .text-dragon-cyan:not(.order-card-container):not(.order-card-container *) {
+  color: #db2777 !important; /* Vivid pink accent for DOELpro */
+  font-weight: 900 !important;
+}
+
+/* Headings & Texts in Light Mode */
+html.light h1:not(.social-post-bg-theme *):not(.msg-bubble-own *):not(.order-card-container *),
+html.light h2:not(.social-post-bg-theme *):not(.msg-bubble-own *):not(.order-card-container *),
+html.light h3:not(.social-post-bg-theme *):not(.msg-bubble-own *):not(.order-card-container *),
+html.light h4:not(.social-post-bg-theme *):not(.msg-bubble-own *):not(.order-card-container *),
+html.light h5:not(.social-post-bg-theme *):not(.msg-bubble-own *):not(.order-card-container *),
+html.light h6:not(.social-post-bg-theme *):not(.msg-bubble-own *):not(.order-card-container *) {
+  color: #0f172a !important; /* Sharp dark slate headings */
+}
+
+html.light p:not(.social-post-bg-theme *):not(.msg-bubble-own):not(.msg-bubble-own *):not(.order-card-container *),
+html.light label:not(.social-post-bg-theme *):not(.order-card-container *) {
+  color: #334155 !important; /* Readable dark slate body text */
+}
+
+/* Light mode text-white override: target only non-button elements */
+html.light :not(button):not(a.btn):not(a[class*="bg-"]):not(button *):not(a[class*="bg-"] *):not(.active-category-btn):not(.active-category-btn *):not(.order-now-btn):not(.order-now-btn *):not([class*="bg-pink"]:not([class*="/"])):not([class*="bg-pink"]:not([class*="/"]) *):not([class*="bg-rose"]:not([class*="/"])):not([class*="bg-rose"]:not([class*="/"]) *):not(.social-post-bg-theme):not(.social-post-bg-theme *):not(.msg-bubble-own):not(.msg-bubble-own *):not(.order-card-container):not(.order-card-container *).text-white {
+  color: #0f172a !important;
+}
+
+html.light .text-pink-600,
+html.light [class*="text-pink"],
+html.light [class*="text-fuchsia"] {
+  color: #db2777 !important; /* Pink brand accent text */
+}
+
+/* Clean Light Mode borders (soft border, no thick black lines) */
+html.light .border-white\/10,
+html.light .border-white\/5,
+html.light .border-slate-200,
+html.light .border-slate-100,
+html.light .border-zinc-800,
+html.light .border-zinc-700,
+html.light .border-zinc-900,
+html.light .border-gray-200,
+html.light .border-gray-300 {
+  border-color: rgba(226, 232, 240, 0.9) !important;
+}
+
+html.light .text-pink-mode-title {
+  color: #db2777 !important;
+}
+
+html.light .text-gray-400:not(.social-post-bg-theme *):not(.msg-bubble-own *):not(.order-card-container *),
+html.light .text-zinc-400:not(.social-post-bg-theme *):not(.msg-bubble-own *):not(.order-card-container *),
+html.light .text-gray-500:not(.social-post-bg-theme *):not(.msg-bubble-own *):not(.order-card-container *),
+html.light .text-zinc-500:not(.social-post-bg-theme *):not(.msg-bubble-own *):not(.order-card-container *) {
+  color: #606770 !important;
+}
+
+html.light .text-zinc-300:not(.social-post-bg-theme *):not(.msg-bubble-own *):not(.order-card-container *),
+html.light .text-gray-300:not(.social-post-bg-theme *):not(.msg-bubble-own *):not(.order-card-container *),
+html.light .text-zinc-200:not(.social-post-bg-theme *):not(.msg-bubble-own *):not(.order-card-container *),
+html.light .text-gray-200:not(.social-post-bg-theme *):not(.msg-bubble-own *):not(.order-card-container *),
+html.light .text-zinc-100:not(.social-post-bg-theme *):not(.msg-bubble-own *):not(.order-card-container *),
+html.light .text-gray-100:not(.social-post-bg-theme *):not(.msg-bubble-own *):not(.order-card-container *) {
+  color: #1c1e21 !important;
+}
+
+/* Social Media Post Background Themes preservation (Light & Dark mode) */
+html.light .social-post-bg-theme,
+html.dark .social-post-bg-theme,
+html .social-post-bg-theme,
+.social-post-bg-theme {
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Explicit full-color, 100% opaque gradients for each theme ID in Light & Dark mode */
+html.light .social-post-theme-sunset_fire,
+html.dark .social-post-theme-sunset_fire,
+.social-post-theme-sunset_fire {
+  background: linear-gradient(135deg, #f97316 0%, #db2777 50%, #dc2626 100%) !important;
+  background-color: #db2777 !important;
+}
+
+html.light .social-post-theme-ocean_deep,
+html.dark .social-post-theme-ocean_deep,
+.social-post-theme-ocean_deep {
+  background: linear-gradient(135deg, #2563eb 0%, #14b8a6 50%, #4338ca 100%) !important;
+  background-color: #2563eb !important;
+}
+
+html.light .social-post-theme-royal_purple,
+html.dark .social-post-theme-royal_purple,
+.social-post-theme-royal_purple {
+  background: linear-gradient(135deg, #7e22ce 0%, #4f46e5 50%, #db2777 100%) !important;
+  background-color: #7e22ce !important;
+}
+
+html.light .social-post-theme-emerald_forest,
+html.dark .social-post-theme-emerald_forest,
+.social-post-theme-emerald_forest {
+  background: linear-gradient(135deg, #059669 0%, #16a34a 50%, #115e59 100%) !important;
+  background-color: #059669 !important;
+}
+
+html.light .social-post-theme-neon_cyber,
+html.dark .social-post-theme-neon_cyber,
+.social-post-theme-neon_cyber {
+  background: linear-gradient(135deg, #06b6d4 0%, #2563eb 50%, #c026d3 100%) !important;
+  background-color: #06b6d4 !important;
+}
+
+html.light .social-post-theme-midnight_glow,
+html.dark .social-post-theme-midnight_glow,
+.social-post-theme-midnight_glow {
+  background: linear-gradient(135deg, #0f172a 0%, #3b0764 50%, #020617 100%) !important;
+  background-color: #0f172a !important;
+}
+
+html.light .social-post-theme-gold_luxury,
+html.dark .social-post-theme-gold_luxury,
+.social-post-theme-gold_luxury {
+  background: linear-gradient(135deg, #d97706 0%, #eab308 50%, #ea580c 100%) !important;
+  background-color: #d97706 !important;
+}
+
+html.light .social-post-theme-passion_rose,
+html.dark .social-post-theme-passion_rose,
+.social-post-theme-passion_rose {
+  background: linear-gradient(135deg, #e11d48 0%, #db2777 50%, #f43f5e 100%) !important;
+  background-color: #e11d48 !important;
+}
+
+html.light .social-post-theme-cosmic_nebula,
+html.dark .social-post-theme-cosmic_nebula,
+.social-post-theme-cosmic_nebula {
+  background: linear-gradient(135deg, #4c1d95 0%, #6b21a8 50%, #0369a1 100%) !important;
+  background-color: #4c1d95 !important;
+}
+
+html.light .social-post-theme-hot_coral,
+html.dark .social-post-theme-hot_coral,
+.social-post-theme-hot_coral {
+  background: linear-gradient(135deg, #ec4899 0%, #ef4444 50%, #eab308 100%) !important;
+  background-color: #ec4899 !important;
+}
+
+html.light .social-post-theme-electric_lime,
+html.dark .social-post-theme-electric_lime,
+.social-post-theme-electric_lime {
+  background: linear-gradient(135deg, #65a30d 0%, #059669 50%, #0d9488 100%) !important;
+  background-color: #65a30d !important;
+}
+
+html.light .social-post-theme-classic_black,
+html.dark .social-post-theme-classic_black,
+.social-post-theme-classic_black {
+  background: linear-gradient(135deg, #020617 0%, #18181b 50%, #000000 100%) !important;
+  background-color: #000000 !important;
+}
+
+html.light .social-post-bg-theme textarea,
+html.dark .social-post-bg-theme textarea,
+.social-post-bg-theme textarea {
+  background-color: transparent !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+html.light .social-post-bg-theme textarea::placeholder,
+html.dark .social-post-bg-theme textarea::placeholder,
+.social-post-bg-theme textarea::placeholder {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+html.light .social-post-bg-theme p,
+html.light .social-post-bg-theme span:not(.font-black.text-dragon-cyan),
+html.light .social-post-bg-theme div,
+html.light .social-post-bg-theme h1,
+html.light .social-post-bg-theme h2,
+html.light .social-post-bg-theme h3,
+.social-post-bg-theme p,
+.social-post-bg-theme span:not(.font-black.text-dragon-cyan),
+.social-post-bg-theme div,
+.social-post-bg-theme h1,
+.social-post-bg-theme h2,
+.social-post-bg-theme h3 {
+  color: inherit;
+}
+
+/* Glass card & Custom Dark Card replacements */
+html.light .glass-card:not(.social-post-bg-theme),
+html.light .bg-\[\#0f1118\]\/90:not(.social-post-bg-theme),
+html.light .bg-\[\#0f1118\]\/80:not(.social-post-bg-theme),
+html.light .bg-\[\#0f1118\]\/95:not(.social-post-bg-theme),
+html.light .bg-\[\#0f1118\]\/50:not(.social-post-bg-theme),
+html.light .bg-\[\#0f1118\]\/30:not(.social-post-bg-theme),
+html.light .bg-\[\#0b0c10\]:not(.social-post-bg-theme),
+html.light .bg-\[\#0a0a0c\]:not(.social-post-bg-theme),
+html.light .bg-\[\#0d0e15\]:not(.social-post-bg-theme),
+html.light .bg-\[\#09090d\]:not(.social-post-bg-theme),
+html.light .bg-\[\#050508\]:not(.social-post-bg-theme),
+html.light .bg-slate-950:not(.social-post-bg-theme),
+html.light .bg-slate-900:not(.social-post-bg-theme),
+html.light .bg-slate-850:not(.social-post-bg-theme),
+html.light .bg-slate-800:not(.social-post-bg-theme),
+html.light .bg-zinc-950\/80:not(.social-post-bg-theme),
+html.light .bg-zinc-950\/50:not(.social-post-bg-theme),
+html.light .bg-zinc-950:not(.social-post-bg-theme),
+html.light .bg-zinc-900:not(.social-post-bg-theme),
+html.light .bg-zinc-800:not(.social-post-bg-theme),
+html.light .bg-gray-950:not(.social-post-bg-theme),
+html.light .bg-gray-900:not(.social-post-bg-theme),
+html.light .bg-black\/40:not(.social-post-bg-theme),
+html.light .bg-black\/55:not(.social-post-bg-theme),
+html.light .bg-black\/20:not(.social-post-bg-theme),
+html.light [class*="bg-[#0f1118]"]:not(.social-post-bg-theme),
+html.light [class*="bg-slate-950"]:not(.social-post-bg-theme),
+html.light [class*="bg-slate-900"]:not(.social-post-bg-theme),
+html.light [class*="bg-slate-800"]:not(.social-post-bg-theme),
+html.light [class*="bg-zinc-950"]:not(.social-post-bg-theme),
+html.light [class*="bg-zinc-900"]:not(.social-post-bg-theme),
+html.light [class*="bg-zinc-800"]:not(.social-post-bg-theme),
+html.light [class*="bg-gray-950"]:not(.social-post-bg-theme),
+html.light [class*="bg-gray-900"]:not(.social-post-bg-theme),
+html.light [class*="bg-[#0c"]:not(.social-post-bg-theme),
+html.light [class*="bg-[#0f"]:not(.social-post-bg-theme),
+html.light [class*="bg-[#0a"]:not(.social-post-bg-theme),
+html.light [class*="bg-[#0e"]:not(.social-post-bg-theme),
+html.light [class*="bg-[#09"]:not(.social-post-bg-theme),
+html.light [class*="bg-[#05"]:not(.social-post-bg-theme),
+html.light [class*="bg-[#0b"]:not(.social-post-bg-theme),
+html.light [class*="bg-[#03"]:not(.social-post-bg-theme),
+html.light [class*="bg-[#07"]:not(.social-post-bg-theme):not([class*="07C160"]),
+html.light [class*="bg-[#06"]:not(.social-post-bg-theme):not([class*="06C755"]),
+html.light [class*="bg-[#08"]:not(.social-post-bg-theme),
+html.light [class*="bg-[#0d"]:not(.social-post-bg-theme),
+html.light [class*="bg-[#121624]"]:not(.social-post-bg-theme),
+html.light .bg-\[\#121624\]:not(.social-post-bg-theme),
+html.light [class*="bg-[#121624]"],
+html.light .bg-\[\#121624\],
+html.light [class*="bg-[#121321]"]:not(.social-post-bg-theme),
+html.light [class*="bg-[#121325]"]:not(.social-post-bg-theme),
+html.light [class*="bg-[#10141a]"]:not(.social-post-bg-theme),
+html.light [class*="bg-[#1f2833]"]:not(.social-post-bg-theme),
+html.light [class*="bg-[#1e1e2e]"]:not(.social-post-bg-theme),
+html.light [class*="bg-[#1e1e1e]"]:not(.social-post-bg-theme) {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #1c1e21 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Explicit Bot Master Engine Card Styling (Pure White in Light Mode, #121624 in Dark Mode) */
+html.light .bot-master-engine-card,
+.bot-master-engine-card {
+  background-color: #ffffff !important;
+  color: #1c1e21 !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .bot-master-engine-card h2 {
+  color: #db2777 !important;
+}
+
+html.light .bot-master-engine-card p {
+  color: #64748b !important;
+}
+
+html.dark .bot-master-engine-card {
+  background-color: #121624 !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: none !important;
+}
+
+html.dark .bot-master-engine-card h2 {
+  color: #ffffff !important;
+}
+
+html.dark .bot-master-engine-card p {
+  color: #94a3b8 !important;
+}
+
+/* Explicitly preserve Brand Badge background colors in Light Mode (WeChat, Line, WhatsApp, Viber, Telegram, etc.) */
+html.light [class*="bg-[#07C160]"],
+html.light [class*="bg-[#06C755]"],
+html.light [class*="bg-[#25D366]"],
+html.light [class*="bg-[#1877F2]"],
+html.light [class*="bg-[#7360F2]"],
+html.light [class*="bg-[#0088cc]"] {
+  color: #ffffff !important;
+  border: none !important;
+}
+html.light [class*="bg-[#07C160]"] {
+  background-color: #07C160 !important;
+}
+html.light [class*="bg-[#06C755]"] {
+  background-color: #06C755 !important;
+}
+html.light [class*="bg-[#25D366]"] {
+  background-color: #25D366 !important;
+}
+html.light [class*="bg-[#1877F2]"] {
+  background-color: #1877F2 !important;
+}
+html.light [class*="bg-[#7360F2]"] {
+  background-color: #7360F2 !important;
+}
+html.light [class*="bg-[#0088cc]"] {
+  background-color: #0088cc !important;
+}
+
+/* Specific border overrides for high contrast and readability in light mode */
+html.light .border-white\/10,
+html.light .border-white\/5,
+html.light .border-zinc-800,
+html.light .border-zinc-700,
+html.light .border-zinc-900,
+html.light .border-zinc-950,
+html.light [class*="border-white/5"],
+html.light [class*="border-white/10"],
+html.light [class*="border-zinc-"],
+html.light [class*="border-gray-"] {
+  border-color: rgba(226, 232, 240, 0.8) !important;
+}
+
+/* Secondary subtle backgrounds inside cards */
+html.light .bg-white\/5,
+html.light .bg-white\/10,
+html.light .bg-zinc-900\/50,
+html.light .bg-zinc-950\/20,
+html.light .bg-black\/5,
+html.light [class*="bg-white/5"],
+html.light [class*="bg-white/10"],
+html.light [class*="bg-[#0f1118]/30"] {
+  background-color: #f8fafc !important;
+  color: #1c1e21 !important;
+  border-color: rgba(226, 232, 240, 0.8) !important;
+}
+
+/* Form Fields - Input, Select, Textarea */
+html.light input:not(.social-post-bg-theme input):not(.social-post-bg-theme):not(.chat-input-textarea):not(.chat-input-bar *),
+html.light select:not(.social-post-bg-theme select):not(.social-post-bg-theme),
+html.light textarea:not(.social-post-bg-theme textarea):not(.social-post-bg-theme):not(.create-post-textarea):not(.chat-input-textarea):not(.chat-input-bar textarea):not(.chat-input-bar *) {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #1c1e21 !important;
+  border-radius: 0.75rem !important;
+}
+
+html.light input:not(.social-post-bg-theme input):not(.social-post-bg-theme):not(.chat-input-textarea):not(.chat-input-bar *):focus,
+html.light select:not(.social-post-bg-theme select):not(.social-post-bg-theme):focus,
+html.light textarea:not(.social-post-bg-theme textarea):not(.social-post-bg-theme):not(.create-post-textarea):not(.chat-input-textarea):not(.chat-input-bar textarea):not(.chat-input-bar *):focus {
+  background-color: #ffffff !important;
+  border-color: #ec4899 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.2) !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #8d949e !important;
+}
+
+html.light option {
+  background-color: #ffffff !important;
+  color: #1c1e21 !important;
+}
+
+/* Buttons and Highlights - Elegant Pink Theme for Main App Light Mode */
+html.light .bg-dragon-cyan {
+  background-color: #ec4899 !important;
+  color: #ffffff !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+}
+
+html.light .bg-dragon-cyan:hover {
+  background-color: #db2777 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px) !important;
+}
+
+html.light .text-dragon-cyan {
+  color: #ec4899 !important;
+}
+
+html.light .border-dragon-cyan {
+  border-color: #ec4899 !important;
+}
+
+html.light .text-dragon-black {
+  color: #ffffff !important;
+}
+
+html.light .dragon-gradient {
+  background: linear-gradient(135deg, #ec4899 0%, #e11d48 100%) !important;
+}
+
+html.light .neon-glow {
+  box-shadow: 0 2px 12px rgba(236, 72, 153, 0.25) !important;
+}
+
+/* ==========================================
+   CINEMATIC GLORY GLASS THEME
+   ========================================== */
+.glory-glass {
+  background: rgba(10, 11, 22, 0.45) !important;
+  backdrop-filter: blur(24px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(170%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 50px rgba(0, 242, 255, 0.02) !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+html.light .glory-glass {
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 0 30px rgba(236, 72, 153, 0.03) !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.glory-glass-hover:hover {
+  border-color: rgba(0, 242, 255, 0.25) !important;
+  box-shadow: 
+    0 15px 50px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 40px rgba(0, 242, 255, 0.08) !important;
+}
+
+html.light .glory-glass-hover:hover {
+  border-color: rgba(236, 72, 153, 0.25) !important;
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 0 30px rgba(236, 72, 153, 0.08) !important;
+}
+
+/* Alpha variations of cyan (now pink in light mode) */
+html.light .bg-dragon-cyan\/20 {
+  background-color: rgba(236, 72, 153, 0.12) !important;
+  color: #ec4899 !important;
+}
+
+html.light .bg-dragon-cyan\/15 {
+  background-color: rgba(236, 72, 153, 0.1) !important;
+  color: #ec4899 !important;
+}
+
+html.light .bg-dragon-cyan\/10 {
+  background-color: rgba(236, 72, 153, 0.08) !important;
+  color: #ec4899 !important;
+}
+
+html.light .section-title {
+  color: #1c1e21 !important;
+  border-bottom: 2px solid #ec4899 !important;
+  font-weight: 700 !important;
+}
+
+/* Social post specifics */
+html.light .px-5.py-4.border-b.border-white\/5 {
+  background-color: #f8fafc !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+html.light .bg-zinc-950\/50 {
+  background-color: #f8fafc !important;
+}
+
+html.light .ring-dragon-cyan\/20 {
+  ring-color: rgba(236, 72, 153, 0.2) !important;
+}
+
+/* Tables and Orders lists styling */
+html.light table {
+  background-color: #ffffff !important;
+}
+
+html.light table th {
+  background-color: #f8fafc !important;
+  color: #606770 !important;
+  font-weight: 600 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light table td {
+  color: #1c1e21 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light .divide-y > :not([hidden]) ~ :not([hidden]) {
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Custom premium status badges */
+html.light .text-red-500,
+html.light .text-red-600,
+html.light .fill-red-500,
+html.light .fill-red-600,
+html.light svg.fill-red-500,
+html.light svg.text-red-500 {
+  color: #ef4444 !important;
+  fill: #ef4444 !important;
+}
+
+html.light .text-yellow-400,
+html.light .text-yellow-500,
+html.light .fill-yellow-400,
+html.light .fill-yellow-500,
+html.light svg.fill-yellow-400,
+html.light svg.text-yellow-400,
+html.light svg.fill-yellow-500,
+html.light svg.text-yellow-500 {
+  color: #eab308 !important;
+  fill: #eab308 !important;
+}
+
+html.light .text-amber-500:not(.social-post-action-btn *),
+html.light .text-amber-400:not(.social-post-action-btn *) {
+  color: #b25e00 !important;
+}
+
+html.light .text-rose-500,
+html.light .text-rose-400 {
+  color: #d92d20 !important;
+}
+
+html.light .text-dragon-emerald,
+html.light .text-emerald-400,
+html.light .text-emerald-550 {
+  color: #039855 !important;
+}
+
+html.light .text-blue-400,
+html.light .text-blue-500 {
+  color: #ec4899 !important;
+}
+
+/* Scrollbars in Light Mode */
+html.light .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+html.light .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+html.light .custom-scrollbar {
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent !important;
+}
+
+/* ==========================================================
+   Chat Message Bubbles - Exact Facebook Messenger / TikTok Aesthetics
+   User A (Other / Incoming) vs User B (Own / Outgoing)
+   ========================================================== */
+
+/* Own / Sent Message - Gorgeous Light Blue to Lavender Signature Gradient */
+.msg-bubble-own,
+html.light .msg-bubble-own {
+  background: linear-gradient(135deg, #0084ff 0%, #00a2ff 35%, #6d4aff 72%, #9d4edd 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 3px 12px rgba(109, 74, 255, 0.22) !important;
+}
+
+.msg-bubble-own,
+.msg-bubble-own *,
+html.light .msg-bubble-own,
+html.light .msg-bubble-own *:not(.order-card-container):not(.order-card-container *) {
+  color: #ffffff !important;
+}
+
+.msg-bubble-own p,
+html.light .msg-bubble-own p,
+.msg-bubble-own span,
+html.light .msg-bubble-own span,
+.msg-bubble-own div,
+html.light .msg-bubble-own div,
+.msg-bubble-own h1,
+.msg-bubble-own h2,
+.msg-bubble-own h3,
+.msg-bubble-own h4,
+.msg-bubble-own h5,
+.msg-bubble-own h6,
+html.light .msg-bubble-own h4,
+html.light .msg-bubble-own h5 {
+  color: #ffffff !important;
+}
+
+.msg-bubble-own .msg-reply-title,
+html.light .msg-bubble-own .msg-reply-title {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.msg-bubble-own .message-reply-preview,
+html.light .msg-bubble-own .message-reply-preview {
+  background-color: rgba(255, 255, 255, 0.22) !important;
+  border-left: 3px solid #ffffff !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+.msg-bubble-own .message-reply-preview *,
+html.light .msg-bubble-own .message-reply-preview * {
+  color: #ffffff !important;
+}
+
+/* Received / Other Message - Dark Mode (#303030 / #242526) */
+.msg-bubble-other {
+  background-color: #303030 !important;
+  color: #e4e6eb !important;
+  border: none !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.msg-bubble-other p {
+  color: #e4e6eb !important;
+  font-weight: 400 !important;
+}
+
+/* Received / Other Message - Light Mode (Soft Gray #e4e6eb) */
+html.light .msg-bubble-other {
+  background-color: #e4e6eb !important;
+  color: #050505 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+html.light .msg-bubble-other p {
+  color: #050505 !important;
+  font-weight: 400 !important;
+}
+
+html.light .msg-bubble-other span:not(.order-card-container span):not(.voice-duration-label span) {
+  color: #050505 !important;
+}
+
+html.light .msg-bubble-other h4,
+html.light .msg-bubble-other h5 {
+  color: #050505 !important;
+}
+
+html.light .msg-bubble-other .msg-reply-title {
+  color: #65676b !important;
+  font-weight: 700 !important;
+}
+
+html.light .msg-bubble-other .message-reply-preview {
+  background-color: #d8dadf !important;
+  border-left: 3px solid #8c9096 !important;
+  color: #050505 !important;
+  border-color: #8c9096 !important;
+}
+
+/* Voice Player styling inside bubbles in Light & Dark Mode */
+.msg-bubble-own .voice-player-container,
+html.light .msg-bubble-own .voice-player-container {
+  background-color: transparent !important;
+}
+
+.msg-bubble-own .voice-play-btn,
+html.light .msg-bubble-own .voice-play-btn {
+  background-color: #ffffff !important;
+  color: #6d4aff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.msg-bubble-own .voice-play-btn svg,
+html.light .msg-bubble-own .voice-play-btn svg {
+  color: #6d4aff !important;
+  fill: #6d4aff !important;
+}
+
+.msg-bubble-own .voice-speed-btn,
+html.light .msg-bubble-own .voice-speed-btn {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+}
+
+.msg-bubble-own .voice-duration-label,
+.msg-bubble-own .voice-duration-label span,
+html.light .msg-bubble-own .voice-duration-label,
+html.light .msg-bubble-own .voice-duration-label span {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.msg-bubble-own .voice-bar,
+html.light .msg-bubble-own .voice-bar {
+  background-color: rgba(255, 255, 255, 0.45) !important;
+}
+
+.msg-bubble-own .voice-bar[class*="bg-white"],
+html.light .msg-bubble-own .voice-bar[class*="bg-white"] {
+  background-color: #ffffff !important;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8) !important;
+}
+
+html.light .msg-bubble-other .voice-play-btn {
+  background-color: #0084ff !important;
+  color: #ffffff !important;
+}
+
+html.light .msg-bubble-other .voice-speed-btn {
+  background-color: #f0f2f5 !important;
+  color: #050505 !important;
+  border-color: #d8dadf !important;
+}
+
+html.light .msg-bubble-other .voice-duration-label span {
+  color: #65676b !important;
+}
+
+/* ==========================================================
+   PERFECT IMMUTABLE ORDER CARD STYLING (LIGHT & DARK MODES)
+   The Order Card must ALWAYS look identical to Dark Mode
+   ========================================================== */
+.order-card-container,
+html.light .order-card-container,
+html.dark .order-card-container {
+  background-color: #0b0c14 !important;
+  background: #0b0c14 !important;
+  border: 2px solid #c084fc !important; /* Uniform rich Lavender border */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(192, 132, 252, 0.35) !important;
+  border-radius: 18px !important;
+  color: #ffffff !important;
+}
+
+.order-card-container.order-card-selected,
+html.light .order-card-container.order-card-selected,
+html.dark .order-card-container.order-card-selected {
+  border: 2.5px solid #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.4), 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Header Box */
+.order-card-container .order-card-header,
+html.light .order-card-container .order-card-header,
+html.dark .order-card-container .order-card-header,
+.order-card-container > div:first-child,
+html.light .order-card-container > div:first-child {
+  background-color: rgba(0, 0, 0, 0.4) !important;
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(0, 245, 212, 0.25) !important;
+  border-radius: 16px !important;
+}
+
+/* Header text & Icon */
+.order-card-container .order-card-header-text,
+html.light .order-card-container .order-card-header-text,
+html.dark .order-card-container .order-card-header-text,
+.order-card-container .text-dragon-cyan,
+html.light .order-card-container .text-dragon-cyan,
+html.dark .order-card-container .text-dragon-cyan,
+.order-card-container [class*="text-dragon-cyan"],
+html.light .order-card-container [class*="text-dragon-cyan"] {
+  color: #00f5d4 !important;
+  -webkit-text-fill-color: #00f5d4 !important;
+}
+
+.order-card-container .bg-dragon-cyan\/10,
+html.light .order-card-container .bg-dragon-cyan\/10,
+html.dark .order-card-container .bg-dragon-cyan\/10,
+.order-card-container [class*="bg-dragon-cyan/10"],
+html.light .order-card-container [class*="bg-dragon-cyan/10"] {
+  background-color: rgba(0, 245, 212, 0.1) !important;
+  background: rgba(0, 245, 212, 0.1) !important;
+}
+
+/* Product Cards (Single and Multi-item) */
+.order-card-container .order-product-card,
+html.light .order-card-container .order-product-card,
+html.dark .order-card-container .order-product-card,
+.order-card-container [class*="bg-black/20"],
+html.light .order-card-container [class*="bg-black/20"],
+.order-card-container [class*="bg-black/25"],
+html.light .order-card-container [class*="bg-black/25"] {
+  background-color: rgba(0, 0, 0, 0.25) !important;
+  background: rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  border-radius: 16px !important;
+}
+
+/* Product Title & Text */
+.order-card-container .order-product-title,
+html.light .order-card-container .order-product-title,
+html.dark .order-card-container .order-product-title,
+.order-card-container h5,
+html.light .order-card-container h5,
+.order-card-container .text-white,
+html.light .order-card-container .text-white {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Product Price */
+.order-card-container .order-product-price,
+html.light .order-card-container .order-product-price,
+html.dark .order-card-container .order-product-price {
+  color: #00f5d4 !important;
+  -webkit-text-fill-color: #00f5d4 !important;
+}
+
+/* Stats 3 boxes (Qty, Items, Shipping) */
+.order-card-container .order-stats-box,
+html.light .order-card-container .order-stats-box,
+html.dark .order-card-container .order-stats-box,
+.order-card-container .grid-cols-3 > div,
+html.light .order-card-container .grid-cols-3 > div {
+  background-color: rgba(0, 0, 0, 0.4) !important;
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 16px !important;
+}
+
+.order-card-container .order-stat-label,
+html.light .order-card-container .order-stat-label,
+html.dark .order-card-container .order-stat-label,
+.order-card-container .grid-cols-3 .text-gray-500,
+html.light .order-card-container .grid-cols-3 .text-gray-500 {
+  color: #9ca3af !important;
+  -webkit-text-fill-color: #9ca3af !important;
+}
+
+.order-card-container .order-stat-qty,
+html.light .order-card-container .order-stat-qty,
+html.dark .order-card-container .order-stat-qty {
+  color: #00f5d4 !important;
+  -webkit-text-fill-color: #00f5d4 !important;
+}
+
+.order-card-container .order-stat-items,
+html.light .order-card-container .order-stat-items,
+html.dark .order-card-container .order-stat-items,
+.order-card-container .text-indigo-400,
+html.light .order-card-container .text-indigo-400 {
+  color: #818cf8 !important;
+  -webkit-text-fill-color: #818cf8 !important;
+}
+
+.order-card-container .order-stat-shipping,
+html.light .order-card-container .order-stat-shipping,
+html.dark .order-card-container .order-stat-shipping,
+.order-card-container .text-rose-400,
+html.light .order-card-container .text-rose-400 {
+  color: #fb7185 !important;
+  -webkit-text-fill-color: #fb7185 !important;
+}
+
+/* Grand Total Box */
+.order-card-container .order-grand-total-box,
+html.light .order-card-container .order-grand-total-box,
+html.dark .order-card-container .order-grand-total-box,
+.order-card-container [class*="bg-black/60"],
+html.light .order-card-container [class*="bg-black/60"] {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+  border: 1px solid rgba(0, 245, 212, 0.2) !important;
+  border-radius: 16px !important;
+}
+
+.order-card-container .order-grand-total-amount,
+html.light .order-card-container .order-grand-total-amount,
+html.dark .order-card-container .order-grand-total-amount {
+  color: #00f5d4 !important;
+  -webkit-text-fill-color: #00f5d4 !important;
+}
+
+.order-card-container .order-payment-method,
+html.light .order-card-container .order-payment-method,
+html.dark .order-card-container .order-payment-method,
+.order-card-container [class*="bg-black/60"] .bg-white\/5,
+html.light .order-card-container [class*="bg-black/60"] .bg-white\/5 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #9ca3af !important;
+  -webkit-text-fill-color: #9ca3af !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.order-card-container .order-customer-name,
+html.light .order-card-container .order-customer-name,
+html.dark .order-card-container .order-customer-name {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.order-card-container .order-customer-phone,
+html.light .order-card-container .order-customer-phone,
+html.dark .order-card-container .order-customer-phone {
+  color: #00f5d4 !important;
+  -webkit-text-fill-color: #00f5d4 !important;
+}
+
+.order-card-container .order-customer-address,
+html.light .order-card-container .order-customer-address,
+html.dark .order-card-container .order-customer-address,
+.order-card-container .text-gray-400,
+html.light .order-card-container .text-gray-400 {
+  color: #9ca3af !important;
+  -webkit-text-fill-color: #9ca3af !important;
+}
+
+/* Icon circles */
+.order-card-container .order-icon-circle-gray,
+html.light .order-card-container .order-icon-circle-gray,
+html.dark .order-card-container .order-icon-circle-gray,
+.order-card-container .w-5.h-5.bg-white\/5,
+html.light .order-card-container .w-5.h-5.bg-white\/5 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #9ca3af !important;
+}
+
+.order-card-container .order-icon-circle-cyan,
+html.light .order-card-container .order-icon-circle-cyan,
+html.dark .order-card-container .order-icon-circle-cyan,
+.order-card-container .w-5.h-5.bg-dragon-cyan\/10,
+html.light .order-card-container .w-5.h-5.bg-dragon-cyan\/10 {
+  background-color: rgba(0, 245, 212, 0.1) !important;
+  background: rgba(0, 245, 212, 0.1) !important;
+  color: #00f5d4 !important;
+}
+
+/* Go To Reports Button */
+.order-card-container .order-reports-btn,
+html.light .order-card-container .order-reports-btn,
+html.dark .order-card-container .order-reports-btn,
+.order-card-container button.bg-white\/5,
+html.light .order-card-container button.bg-white\/5 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.order-card-container .order-reports-btn:hover,
+html.light .order-card-container .order-reports-btn:hover,
+html.dark .order-card-container .order-reports-btn:hover,
+.order-card-container button.bg-white\/5:hover,
+html.light .order-card-container button.bg-white\/5:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #00f5d4 !important;
+  -webkit-text-fill-color: #00f5d4 !important;
+}
+
+
+/* Action buttons in Light Mode - High Specificity Protection */
+html.light .order-card-container .order-btn-courier,
+html.light .order-card-container .order-btn-courier *,
+html.light [class*="bg-dragon-cyan/"] .order-btn-courier,
+html.light [class*="bg-dragon-cyan/"] .order-btn-courier * {
+  background-color: #2563eb !important; /* Distinct Royal Blue for Courier Booking */
+  color: #ffffff !important;
+  border-color: #1d4ed8 !important;
+}
+html.light .order-card-container .order-btn-courier:hover,
+html.light .order-card-container .order-btn-courier:hover * {
+  background-color: #1d4ed8 !important;
+  color: #ffffff !important;
+}
+
+html.light .order-card-container .order-btn-location,
+html.light .order-card-container .order-btn-location *,
+html.light [class*="bg-dragon-cyan/"] .order-btn-location,
+html.light [class*="bg-dragon-cyan/"] .order-btn-location * {
+  background-color: #059669 !important; /* Distinct Emerald Green for Tracking Location */
+  color: #ffffff !important;
+  border-color: #047857 !important;
+}
+html.light .order-card-container .order-btn-location:hover,
+html.light .order-card-container .order-btn-location:hover * {
+  background-color: #047857 !important;
+  color: #ffffff !important;
+}
+
+/* Quick Copy Buttons in Light Mode */
+html.light .order-copy-btn,
+html.light .order-card-container .order-copy-btn,
+html.light .order-copy-btn *,
+html.light .order-card-container .order-copy-btn *,
+html.light [class*="bg-dragon-cyan/"] .order-copy-btn,
+html.light [class*="bg-dragon-cyan/"] .order-copy-btn * {
+  background-color: #30a1a2 !important;
+  color: #ffffff !important;            /* Pure White Text for High Readability */
+  border-color: #268182 !important;
+  font-weight: 800 !important;
+}
+html.light .order-copy-btn:hover,
+html.light .order-card-container .order-copy-btn:hover,
+html.light .order-copy-btn:hover *,
+html.light .order-card-container .order-copy-btn:hover * {
+  background-color: #268182 !important;
+  color: #ffffff !important;
+}
+
+html.light .order-card-container .order-btn-block,
+html.light .order-card-container .order-btn-block *,
+html.light [class*="bg-dragon-cyan/"] .order-btn-block,
+html.light [class*="bg-dragon-cyan/"] .order-btn-block * {
+  background-color: #d97706 !important;
+  color: #ffffff !important;
+  border-color: #b45309 !important;
+}
+html.light .order-card-container .order-btn-block:hover,
+html.light .order-card-container .order-btn-block:hover * {
+  background-color: #b45309 !important;
+  color: #ffffff !important;
+}
+
+html.light .order-card-container .order-btn-delete,
+html.light .order-card-container button.bg-red-500\/10,
+html.light .order-card-container .order-btn-delete *,
+html.light .order-card-container button.bg-red-500\/10 *,
+html.light [class*="bg-dragon-cyan/"] .order-btn-delete,
+html.light [class*="bg-dragon-cyan/"] .order-btn-delete * {
+  background-color: #e11d48 !important;
+  color: #ffffff !important;
+  border-color: #be123c !important;
+}
+html.light .order-card-container .order-btn-delete:hover,
+html.light .order-card-container button.bg-red-500\/10:hover,
+html.light .order-card-container .order-btn-delete:hover *,
+html.light .order-card-container button.bg-red-500\/10:hover * {
+  background-color: #be123c !important;
+  color: #ffffff !important;
+}
+
+/* Immersive Profile Card (My Profile section of Social Page) */
+html.light .social-profile-card {
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light .social-profile-card h2,
+html.light .social-profile-card h3 {
+  color: #0f172a !important;
+}
+
+html.light .social-profile-card p,
+html.light .social-profile-card span {
+  color: #475569 !important;
+}
+
+html.light .social-profile-card [class*="bg-"]:not(.bg-cover):not([class*="bg-cover"]):not([class*="bg-gradient"]):not(.profile-cover-banner) {
+  background-color: #f8fafc !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Ensure Cover Photo Banner and Gradient Overlays stay transparent / un-obscured in Light Mode */
+html.light .bg-cover,
+html.light [class*="bg-cover"],
+html.light .profile-cover-banner {
+  background-color: transparent !important;
+}
+
+html.light .bg-cover > div[class*="bg-gradient"],
+html.light [class*="bg-cover"] > div[class*="bg-gradient"],
+html.light .profile-cover-banner > div[class*="bg-gradient"] {
+  background-color: transparent !important;
+}
+
+/* Profile Info Sub-Boxes in Profile section */
+html.light .profile-info-box {
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+
+html.light .profile-info-box h3 {
+  color: #0f172a !important;
+  border-bottom-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+html.light .profile-info-box p,
+html.light .profile-info-box span {
+  color: #334155 !important;
+}
+
+html.light .profile-info-box [class*="bg-"] {
+  background-color: #f1f5f9 !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+html.light .profile-avatar {
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+html.light .profile-badge-border {
+  border-color: #ffffff !important;
+}
+
+/* Social Media Post Cards in Light Mode */
+html.light .social-feed-post-card {
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+}
+
+html.light .social-feed-post-card h3,
+html.light .social-feed-post-card h4 {
+  color: #0f172a !important;
+}
+
+html.light .social-feed-post-card p {
+  color: #1e293b !important;
+}
+
+html.light .social-feed-post-card span {
+  color: #475569 !important;
+}
+
+html.light .social-feed-post-card [class*="bg-"]:not(.bg-cover):not([class*="bg-cover"]):not([class*="bg-gradient"]) {
+  background-color: #f8fafc !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Modals Backdrops and Popups in Light Mode */
+html.light .bg-dragon-black\/95,
+html.light .bg-black\/95 {
+  background-color: rgba(240, 242, 245, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+/* Chatroom Header Light Mode */
+html.light .chatroom-header {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+}
+
+html.light .chatroom-header h2 {
+  color: #0f172a !important;
+}
+
+html.light .chatroom-header p {
+  color: #059669 !important; /* Beautiful green for Online */
+}
+
+html.light .chatroom-header button {
+  color: #475569 !important;
+}
+
+html.light .chatroom-header button:hover {
+  color: #0f172a !important;
+}
+
+/* Call Button */
+html.light .chatroom-header button.bg-dragon-cyan\/10 {
+  background-color: #fdf2f8 !important;
+  color: #ec4899 !important;
+  border-color: #fbcfe8 !important;
+}
+html.light .chatroom-header button.bg-dragon-cyan\/10:hover {
+  background-color: #fce7f3 !important;
+  color: #db2777 !important;
+}
+
+/* Withdraw Button */
+html.light .chatroom-header button.bg-dragon-emerald\/10 {
+  background-color: #fdf2f8 !important;
+  color: #db2777 !important;
+  border-color: #fbcfe8 !important;
+}
+html.light .chatroom-header button.bg-dragon-emerald\/10:hover {
+  background-color: #fce7f3 !important;
+  color: #be185d !important;
+}
+
+/* Report Button */
+html.light .chatroom-header button.bg-dragon-purple\/10 {
+  background-color: #f5f3ff !important;
+  color: #7c3aed !important;
+  border-color: #ddd6fe !important;
+}
+html.light .chatroom-header button.bg-dragon-purple\/10:hover {
+  background-color: #ede9fe !important;
+  color: #6d28d9 !important;
+}
+
+/* Voice Player Custom Styling */
+.voice-player-container {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Light Mode Overrides for Voice Message Player */
+html.light .voice-player-container {
+  background-color: #f1f5f9 !important; /* Soft, readable light-gray background */
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+
+html.light .voice-play-btn {
+  background-color: #ec4899 !important; /* Vibrant Pink background */
+  color: #ffffff !important; /* Force white icon stroke */
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3) !important;
+}
+
+html.light .voice-play-btn svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+html.light .voice-bar-inactive {
+  background-color: #cbd5e1 !important; /* High contrast gray for inactive seek bars */
+}
+
+html.light .voice-bar-active {
+  background-color: #ec4899 !important; /* Clear Pink for active play progress */
+}
+
+html.light .voice-duration-label span {
+  color: #475569 !important; /* Clear, readable duration timers */
+}
+
+/* Voice playback speed button styling */
+.voice-speed-btn {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+html.light .voice-speed-btn {
+  background-color: #cbd5e1 !important; /* Prominent gray badge in WhatsApp style */
+  color: #0f172a !important; /* Deep contrast dark text */
+  border: 1px solid #94a3b8 !important;
+}
+
+html.light .voice-speed-btn:hover {
+  background-color: #94a3b8 !important;
+}
+
+/* Reply Preview Container above Input Bar in Light Mode */
+html.light .reply-preview-container {
+  background-color: #f1f5f9 !important; /* Soft high contrast gray/pink */
+  border: 1px solid #cbd5e1 !important;
+  border-bottom: none !important;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light .reply-indicator-bar {
+  background-color: #ec4899 !important; /* Vibrant Pink */
+}
+
+html.light .reply-title-label {
+  color: #db2777 !important; /* Clear Deep Pink title */
+  font-weight: 900 !important;
+}
+
+html.light .reply-text-label {
+  color: #0f172a !important; /* Deep contrast slate for text */
+  opacity: 1 !important;
+  font-weight: 500 !important;
+}
+
+html.light .reply-close-btn {
+  background-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light .reply-close-btn:hover {
+  background-color: #94a3b8 !important;
+  color: #000000 !important;
+}
+
+/* Inline Reply inside Message Bubble in Light Mode */
+html.light .message-reply-preview {
+  background-color: #f8fafc !important; /* Light slate gray background */
+  border-left: 3.5px solid #ec4899 !important; /* Strong Pink indicator line */
+  color: #0f172a !important; /* High contrast deep slate text */
+  opacity: 1 !important;
+  border-color: #ec4899 !important;
+}
+
+html.light .msg-reply-title {
+  color: #db2777 !important; /* Clear bold pink label */
+  font-weight: 900 !important;
+  opacity: 1 !important;
+}
+
+/* Premium High-Contrast Toggle Switch Styles in Light Mode */
+html.light .custom-toggle-track {
+  background-color: #cbd5e1 !important; /* Clearly visible mid-gray track when inactive */
+  border: 1px solid #94a3b8 !important;
+}
+
+html.light .custom-toggle-track.active-toggle {
+  background-color: #00bcd4 !important; /* Premium cyan track when active */
+  border-color: #00acc1 !important;
+}
+
+html.light .custom-toggle-thumb {
+  background-color: #ffffff !important; /* Bright white thumb */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Premium High-Contrast TikTok Button style in Light Mode */
+html.light .tiktok-auth-btn {
+  background-color: #09090b !important; /* True premium dark gray/black background */
+  color: #ffffff !important; /* Force pristine white text */
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+html.light .tiktok-auth-btn,
+html.light .tiktok-auth-btn * {
+  color: #ffffff !important; /* Force all nested text and SVG elements to be white */
+}
+
+html.light .tiktok-auth-btn:hover {
+  background-color: #1d1d21 !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* ==========================================================
+   Ultimate Messenger & ChatRoom Light Mode Legibility Overrides
+   ========================================================== */
+
+/* Main Containers: Sidebar, lists & active chats */
+html.light .bg-zinc-950\/40,
+html.light [class*="bg-zinc-950/40"] {
+  background-color: #f8fafc !important; /* Premium light slate/white card */
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #0f172a !important;
+}
+
+/* Input Form containers (bg-black/45, bg-black/40) in Messenger & Chatroom */
+html.light .bg-black\/45,
+html.light .bg-black\/40,
+html.light [class*="bg-black/45"],
+html.light [class*="bg-black/40"] {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .bg-black\/45 input,
+html.light .bg-black\/40 textarea,
+html.light [class*="bg-black/45"] input,
+html.light [class*="bg-black/40"] textarea {
+  color: #020617 !important; /* Pure black readable text while typing */
+  font-weight: 500 !important;
+}
+
+html.light .bg-black\/45 input::placeholder,
+html.light .bg-black\/40 textarea::placeholder {
+  color: #64748b !important; /* Visible slate placeholder color */
+}
+
+/* Financial Drawer, Header strip: bg-dragon-black/40 */
+html.light .bg-dragon-black\/40,
+html.light [class*="bg-dragon-black/40"] {
+  background-color: #f1f5f9 !important; /* Distinct light accent border/header */
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Specific text colors for headers and metadata that default to light grays on dark */
+html.light .text-\[\#888899\],
+html.light [class*="text-[#888899]"],
+html.light .text-gray-500,
+html.light [class*="text-gray-500"] {
+  color: #475569 !important; /* Deep contrast dark slate */
+}
+
+html.light .text-\[\#555566\],
+html.light [class*="text-[#555566]"] {
+  color: #64748b !important; /* Highly readable slate gray */
+}
+
+/* Site chat customer list rows in Light Mode */
+html.light [class*="site-chat-"] .bg-white\/5,
+html.light [class*="site-chat-"] [class*="bg-white/5"] {
+  background-color: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light [class*="site-chat-"] .hover\:bg-white\/15:hover {
+  background-color: #f1f5f9 !important;
+}
+
+/* Selected row in customer list */
+html.light [class*="site-chat-"] .bg-dragon-cyan\/15 {
+  background-color: #fdf2f8 !important; /* Soft pink active background */
+  border-color: #ec4899 !important;
+}
+
+/* Dragon AI / Auto-Bot Message Bubbles in Light Mode */
+html.light .msg-bubble-bot,
+html.light [class*="msg-bubble-bot"] {
+  background-color: #f5f3ff !important; /* Exquisite light lavender background */
+  border: 1px solid #ddd6fe !important;
+  color: #5b21b6 !important; /* Deep visible violet text */
+  background-image: none !important;
+  box-shadow: 0 3px 8px rgba(109, 40, 217, 0.06) !important;
+}
+
+html.light .msg-bubble-bot p,
+html.light .msg-bubble-bot span,
+html.light .msg-bubble-bot div {
+  color: #5b21b6 !important; /* Ensure children retain gorgeous purple readability */
+}
+
+html.light .msg-bubble-bot .text-dragon-cyan {
+  color: #7c3aed !important; /* Elevate bot badge details to solid purple */
+}
+
+/* Quoted reply message in Site Messenger list and message bubble */
+html.light [class*="replyTo"] .bg-white\/5,
+html.light .msg-bubble-other .message-reply-preview,
+html.light .msg-bubble-own .message-reply-preview {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Replying visual floating indicator (bg-black/80) */
+html.light .bg-black\/80,
+html.light [class*="bg-black/80"] {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light .bg-black\/80 span {
+  color: #0f172a !important;
+}
+
+/* Recent Threads / Users in Messenger page: ChatRow & UserRow lists */
+html.light [class*="chat-row"],
+html.light [class*="user-row"],
+html.light .glass-card.hover\:bg-white\/10 {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+}
+
+html.light [class*="chat-row"]:hover,
+html.light [class*="user-row"]:hover,
+html.light .glass-card.hover\:bg-white\/10:hover {
+  background-color: #f8fafc !important;
+}
+
+html.light .hover\:bg-white\/5:hover {
+  background-color: #f8fafc !important;
+}
+
+html.light .border-b.border-white\/5 {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Global button/badge safety overrides inside Light Mode to prevent text-white from blackening them */
+html.light button.bg-dragon-cyan:not([style*="background"]) text-white,
+html.light button.bg-dragon-cyan:not([style*="background"]) span,
+html.light button.bg-dragon-cyan:not([style*="background"]) {
+  color: #ffffff !important; /* Keep buttons white text on pink background in light mode */
+}
+
+html.light button.bg-blue-600,
+html.light button.bg-indigo-600,
+html.light button.bg-red-600,
+html.light button.bg-emerald-600,
+html.light .bg-blue-600 *,
+html.light .bg-indigo-600 *,
+html.light .bg-red-600 *,
+html.light .bg-emerald-600 * {
+  color: #ffffff !important; /* Force true white text inside solid colored brand buttons */
+}
+
+/* ==========================================================
+   LANDING PAGE & PRO WEBSITE STRICT THEME ISOLATION
+   Ensures main app light theme NEVER overrides landing page or pro website theme
+   ========================================================== */
+
+/* Restore text colors for dark/themed landing pages and pro websites */
+html.light .custom-lp-wrapper.lp-dark-theme .text-white,
+html.light .custom-pro-wrapper.pro-dark-theme .text-white,
+html.light .custom-lp-wrapper.lp-dark-theme .text-white *,
+html.light .custom-pro-wrapper.pro-dark-theme .text-white * {
+  color: #ffffff !important;
+}
+
+html.light .custom-lp-wrapper.lp-dark-theme .text-gray-400,
+html.light .custom-pro-wrapper.pro-dark-theme .text-gray-400,
+html.light .custom-lp-wrapper.lp-dark-theme .text-zinc-400,
+html.light .custom-pro-wrapper.pro-dark-theme .text-zinc-400 {
+  color: #9ca3af !important;
+}
+
+html.light .custom-lp-wrapper.lp-dark-theme .text-gray-500,
+html.light .custom-pro-wrapper.pro-dark-theme .text-gray-500,
+html.light .custom-lp-wrapper.lp-dark-theme .text-zinc-500,
+html.light .custom-pro-wrapper.pro-dark-theme .text-zinc-500 {
+  color: #6b7280 !important;
+}
+
+html.light .custom-lp-wrapper.lp-dark-theme .text-gray-300,
+html.light .custom-pro-wrapper.pro-dark-theme .text-gray-300,
+html.light .custom-lp-wrapper.lp-dark-theme .text-zinc-300,
+html.light .custom-pro-wrapper.pro-dark-theme .text-zinc-300,
+html.light .custom-lp-wrapper.lp-dark-theme .text-zinc-200,
+html.light .custom-pro-wrapper.pro-dark-theme .text-zinc-200,
+html.light .custom-lp-wrapper.lp-dark-theme .text-gray-200,
+html.light .custom-pro-wrapper.pro-dark-theme .text-gray-200,
+html.light .custom-lp-wrapper.lp-dark-theme .text-zinc-100,
+html.light .custom-pro-wrapper.pro-dark-theme .text-zinc-100,
+html.light .custom-lp-wrapper.lp-dark-theme .text-gray-100,
+html.light .custom-pro-wrapper.pro-dark-theme .text-gray-100 {
+  color: #d1d5db !important;
+}
+
+html.light .custom-lp-wrapper.lp-dark-theme .text-dragon-cyan,
+html.light .custom-pro-wrapper.pro-dark-theme .text-dragon-cyan {
+  color: #00f2ff !important;
+}
+
+html.light .custom-lp-wrapper.lp-dark-theme .bg-dragon-cyan,
+html.light .custom-pro-wrapper.pro-dark-theme .bg-dragon-cyan {
+  background-color: #00f2ff !important;
+  color: #050505 !important;
+}
+
+html.light .custom-lp-wrapper.lp-dark-theme .text-dragon-black,
+html.light .custom-pro-wrapper.pro-dark-theme .text-dragon-black {
+  color: #050505 !important;
+}
+
+html.light .custom-lp-wrapper.lp-dark-theme .border-dragon-cyan,
+html.light .custom-pro-wrapper.pro-dark-theme .border-dragon-cyan {
+  border-color: #00f2ff !important;
+}
+
+/* Restore dark card & container backgrounds */
+html.light .custom-lp-wrapper.lp-dark-theme .glass-card,
+html.light .custom-pro-wrapper.pro-dark-theme .glass-card,
+html.light .custom-lp-wrapper.lp-dark-theme .bg-zinc-950,
+html.light .custom-pro-wrapper.pro-dark-theme .bg-zinc-950,
+html.light .custom-lp-wrapper.lp-dark-theme .bg-zinc-900,
+html.light .custom-pro-wrapper.pro-dark-theme .bg-zinc-900,
+html.light .custom-lp-wrapper.lp-dark-theme .bg-zinc-800,
+html.light .custom-pro-wrapper.pro-dark-theme .bg-zinc-800,
+html.light .custom-lp-wrapper.lp-dark-theme .bg-black\/40,
+html.light .custom-pro-wrapper.pro-dark-theme .bg-black\/40,
+html.light .custom-lp-wrapper.lp-dark-theme .bg-black\/55,
+html.light .custom-pro-wrapper.pro-dark-theme .bg-black\/55,
+html.light .custom-lp-wrapper.lp-dark-theme .bg-black\/20,
+html.light .custom-pro-wrapper.pro-dark-theme .bg-black\/20,
+html.light .custom-lp-wrapper.lp-dark-theme [class*="bg-[#0f1118]"],
+html.light .custom-pro-wrapper.pro-dark-theme [class*="bg-[#0f1118]"],
+html.light .custom-lp-wrapper.lp-dark-theme [class*="bg-[#0b0c10]"],
+html.light .custom-pro-wrapper.pro-dark-theme [class*="bg-[#0b0c10]"],
+html.light .custom-lp-wrapper.lp-dark-theme [class*="bg-[#0a0a0c]"],
+html.light .custom-pro-wrapper.pro-dark-theme [class*="bg-[#0a0a0c]"],
+html.light .custom-lp-wrapper.lp-dark-theme [class*="bg-[#0d0e15]"],
+html.light .custom-pro-wrapper.pro-dark-theme [class*="bg-[#0d0e15]"],
+html.light .custom-lp-wrapper.lp-dark-theme [class*="bg-[#09090d]"],
+html.light .custom-pro-wrapper.pro-dark-theme [class*="bg-[#09090d]"],
+html.light .custom-lp-wrapper.lp-dark-theme [class*="bg-[#050508]"],
+html.light .custom-pro-wrapper.pro-dark-theme [class*="bg-[#050508]"] {
+  background-color: rgba(15, 17, 24, 0.9) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: none !important;
+}
+
+html.light .custom-lp-wrapper.lp-dark-theme .bg-white\/5,
+html.light .custom-pro-wrapper.pro-dark-theme .bg-white\/5,
+html.light .custom-lp-wrapper.lp-dark-theme .bg-white\/10,
+html.light .custom-pro-wrapper.pro-dark-theme .bg-white\/10 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+html.light .custom-lp-wrapper.lp-dark-theme .border-white\/10,
+html.light .custom-pro-wrapper.pro-dark-theme .border-white\/10,
+html.light .custom-lp-wrapper.lp-dark-theme .border-white\/5,
+html.light .custom-pro-wrapper.pro-dark-theme .border-white\/5,
+html.light .custom-lp-wrapper.lp-dark-theme .border-zinc-800,
+html.light .custom-pro-wrapper.pro-dark-theme .border-zinc-800,
+html.light .custom-lp-wrapper.lp-dark-theme .border-zinc-700,
+html.light .custom-pro-wrapper.pro-dark-theme .border-zinc-700 {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Restore form inputs inside landing pages & pro websites */
+html.light .custom-lp-wrapper.lp-dark-theme input,
+html.light .custom-lp-wrapper.lp-dark-theme select,
+html.light .custom-lp-wrapper.lp-dark-theme textarea,
+html.light .custom-pro-wrapper.pro-dark-theme input,
+html.light .custom-pro-wrapper.pro-dark-theme select,
+html.light .custom-pro-wrapper.pro-dark-theme textarea {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+  border-radius: 0.75rem !important;
+}
+
+html.light .custom-lp-wrapper.lp-dark-theme input:focus,
+html.light .custom-lp-wrapper.lp-dark-theme select:focus,
+html.light .custom-lp-wrapper.lp-dark-theme textarea:focus,
+html.light .custom-pro-wrapper.pro-dark-theme input:focus,
+html.light .custom-pro-wrapper.pro-dark-theme select:focus,
+html.light .custom-pro-wrapper.pro-dark-theme textarea:focus {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+  border-color: #00f2ff !important;
+  box-shadow: 0 0 0 2px rgba(0, 242, 255, 0.2) !important;
+}
+
+html.light .custom-lp-wrapper.lp-dark-theme input::placeholder,
+html.light .custom-lp-wrapper.lp-dark-theme textarea::placeholder,
+html.light .custom-pro-wrapper.pro-dark-theme input::placeholder,
+html.light .custom-pro-wrapper.pro-dark-theme textarea::placeholder {
+  color: #9ca3af !important;
+}
+
+html.light .custom-lp-wrapper.lp-dark-theme option,
+html.light .custom-pro-wrapper.pro-dark-theme option {
+  background-color: #0f1118 !important;
+  color: #ffffff !important;
+}
+
+/* ==========================================
+   Inbox Report Popup (ChatReportPopup) Light Mode
+   ========================================== */
+html.light .chat-report-modal {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Modal Header */
+html.light .chat-report-modal .bg-gradient-to-r {
+  background: linear-gradient(to right, #f0f9ff, #f0fdf4) !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+html.light .chat-report-modal h1 {
+  color: #0f172a !important;
+  font-weight: 900 !important;
+}
+
+html.light .chat-report-modal .p-4 .text-zinc-400,
+html.light .chat-report-modal .p-5 .text-zinc-400 {
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+
+html.light .chat-report-modal .bg-dragon-cyan\/10.border-dragon-cyan\/20 {
+  background-color: #e0f2fe !important;
+  border-color: #38bdf8 !important;
+  color: #0284c7 !important;
+}
+
+html.light .chat-report-modal button.hover\:bg-white\/5 {
+  color: #475569 !important;
+  border-color: #cbd5e1 !important;
+  background-color: #f1f5f9 !important;
+}
+
+html.light .chat-report-modal button.hover\:bg-white\/5:hover {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+/* View Mode Tabs */
+html.light .chat-report-modal .bg-zinc-950\/20 {
+  background-color: #f8fafc !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+html.light .chat-report-modal .bg-zinc-950\/20 button {
+  color: #475569 !important;
+  font-weight: 800 !important;
+}
+
+html.light .chat-report-modal .bg-zinc-950\/20 button.bg-dragon-cyan\/10 {
+  background-color: #ffffff !important;
+  color: #0284c7 !important;
+  border-top-color: #38bdf8 !important;
+  border-x-color: #e2e8f0 !important;
+  font-weight: 900 !important;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Filters & Search Strip */
+html.light .chat-report-modal .bg-zinc-950\/40 {
+  background-color: #f1f5f9 !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+}
+
+html.light .chat-report-modal .bg-zinc-950\/40 span,
+html.light .chat-report-modal .bg-zinc-950\/40 svg {
+  color: #334155 !important;
+  font-weight: 800 !important;
+}
+
+html.light .chat-report-modal select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border: 1.5px solid #cbd5e1 !important;
+  font-weight: 800 !important;
+}
+
+html.light .chat-report-modal select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+html.light .chat-report-modal button.bg-dragon-cyan\/20 {
+  background-color: #be185d !important;
+  color: #ffffff !important;
+  border-color: #9d174d !important;
+  font-weight: 900 !important;
+  box-shadow: 0 2px 8px rgba(190, 24, 93, 0.25) !important;
+}
+
+html.light .chat-report-modal button.bg-dragon-cyan\/20:hover {
+  background-color: #9d174d !important;
+  color: #ffffff !important;
+}
+
+/* Main Dashboard Scroll Area */
+html.light .chat-report-modal .bg-\[\#08090e\] {
+  background-color: #f8fafc !important;
+  background: #f8fafc !important;
+}
+
+/* Main Key-Value Stat Cards */
+html.light .chat-report-modal .glass-card {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .chat-report-modal .glass-card span.font-extrabold {
+  color: #334155 !important;
+  font-weight: 900 !important;
+}
+
+html.light .chat-report-modal .glass-card .text-white {
+  color: #0f172a !important;
+  font-weight: 900 !important;
+}
+
+html.light .chat-report-modal .glass-card .text-zinc-400,
+html.light .chat-report-modal .glass-card .text-zinc-500 {
+  color: #475569 !important;
+  font-weight: 800 !important;
+}
+
+/* Specific colored card highlights in light mode */
+html.light .chat-report-modal .bg-orange-500\/5 {
+  background-color: #fff7ed !important;
+  border-color: #ffedd5 !important;
+}
+html.light .chat-report-modal .bg-amber-500\/5 {
+  background-color: #fffbeb !important;
+  border-color: #fef3c7 !important;
+}
+html.light .chat-report-modal .bg-dragon-emerald\/5 {
+  background-color: #f0fdf4 !important;
+  border-color: #dcfce7 !important;
+}
+html.light .chat-report-modal .bg-blue-500\/5 {
+  background-color: #eff6ff !important;
+  border-color: #dbeafe !important;
+}
+
+/* Order Type Analysis Box */
+html.light .chat-report-modal .bg-black\/45 {
+  background-color: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
+}
+
+html.light .chat-report-modal .bg-black\/45 .text-zinc-500 {
+  color: #334155 !important;
+  font-weight: 800 !important;
+}
+
+html.light .chat-report-modal .bg-black\/45 .text-white {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+html.light .chat-report-modal .bg-\[\#0c0d16\] {
+  background-color: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+
+html.light .chat-report-modal .bg-\[\#0c0d16\] strong {
+  color: #0f172a !important;
+  font-weight: 900 !important;
+}
+
+/* Order Registry Table Container */
+html.light .chat-report-modal .bg-\[\#0b0c13\] {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .chat-report-modal .bg-\[\#0b0c13\] .bg-zinc-950\/40 {
+  background-color: #f1f5f9 !important;
+  border-bottom: 1.5px solid #cbd5e1 !important;
+}
+
+html.light .chat-report-modal .bg-\[\#0b0c13\] h3 {
+  color: #0f172a !important;
+  font-weight: 900 !important;
+}
+
+html.light .chat-report-modal .bg-\[\#0b0c13\] p {
+  color: #475569 !important;
+  font-weight: 700 !important;
+}
+
+/* Table styling */
+html.light .chat-report-modal table {
+  color: #0f172a !important;
+}
+
+html.light .chat-report-modal thead tr {
+  background-color: #f8fafc !important;
+  border-bottom: 2px solid #cbd5e1 !important;
+}
+
+html.light .chat-report-modal thead th {
+  color: #1e293b !important;
+  font-weight: 900 !important;
+  font-size: 10px !important;
+}
+
+html.light .chat-report-modal tbody tr {
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+html.light .chat-report-modal tbody tr:hover {
+  background-color: #f1f5f9 !important;
+}
+
+html.light .chat-report-modal tbody td {
+  color: #1e293b !important;
+}
+
+html.light .chat-report-modal tbody td.text-gray-400 {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+html.light .chat-report-modal tbody td.text-zinc-400 {
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+
+html.light .chat-report-modal tbody td.text-white {
+  color: #0f172a !important;
+  font-weight: 900 !important;
+}
+
+/* Price & Commission columns readability in light mode */
+html.light .chat-report-modal tbody td.text-red-400 {
+  color: #dc2626 !important; /* Bold Red */
+  font-weight: 900 !important;
+}
+
+html.light .chat-report-modal tbody td.text-cyan-400 {
+  color: #0284c7 !important; /* Deep Cyan Blue */
+  font-weight: 900 !important;
+}
+
+html.light .chat-report-modal tbody td.text-amber-400 {
+  color: #d97706 !important; /* Deep Amber */
+  font-weight: 900 !important;
+}
+
+html.light .chat-report-modal tbody td.text-dragon-emerald {
+  color: #15803d !important; /* Deep Emerald Green */
+  font-weight: 900 !important;
+}
+
+/* Source & Status Badges */
+html.light .chat-report-modal span.bg-dragon-cyan\/10 {
+  background-color: #e0f2fe !important;
+  color: #0369a1 !important;
+  border-color: #bae6fd !important;
+  font-weight: 900 !important;
+}
+
+html.light .chat-report-modal span.bg-dragon-purple\/10 {
+  background-color: #f3e8ff !important;
+  color: #7e22ce !important;
+  border-color: #e9d5ff !important;
+  font-weight: 900 !important;
+}
+
+html.light .chat-report-modal span.bg-dragon-emerald\/10 {
+  background-color: #dcfce7 !important;
+  color: #15803d !important;
+  border-color: #bbf7d0 !important;
+  font-weight: 900 !important;
+}
+
+html.light .chat-report-modal span.bg-amber-400\/10 {
+  background-color: #fef3c7 !important;
+  color: #b45309 !important;
+  border-color: #fde68a !important;
+  font-weight: 900 !important;
+}
+
+html.light .chat-report-modal span.bg-red-500\/10 {
+  background-color: #fee2e2 !important;
+  color: #b91c1c !important;
+  border-color: #fca5a5 !important;
+  font-weight: 900 !important;
+}
+
+/* Footer Banner */
+html.light .chat-report-modal .p-3.border-t {
+  background-color: #f8fafc !important;
+  border-top: 1px solid #cbd5e1 !important;
+  color: #475569 !important;
+  font-weight: 800 !important;
+}
+
+/* Global Light & Dark Mode Date Inputs & Filters */
+html.light input[type="date"],
+html.light input[type="datetime-local"] {
+  color-scheme: light !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border: 1.5px solid #0284c7 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+html:not(.light) input[type="date"],
+html:not(.light) input[type="datetime-local"] {
+  color-scheme: dark !important;
+  background-color: #121321 !important;
+  color: #ffffff !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
+  font-weight: 800 !important;
+}
+
+html.light input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: none !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+}
+
+html:not(.light) input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+}
+
+html.light input[type="date"]::-webkit-datetime-edit,
+html.light input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+html.light input[type="date"]::-webkit-datetime-edit-text,
+html.light input[type="date"]::-webkit-datetime-edit-month-field,
+html.light input[type="date"]::-webkit-datetime-edit-day-field,
+html.light input[type="date"]::-webkit-datetime-edit-year-field {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+html:not(.light) input[type="date"]::-webkit-datetime-edit,
+html:not(.light) input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+html:not(.light) input[type="date"]::-webkit-datetime-edit-text,
+html:not(.light) input[type="date"]::-webkit-datetime-edit-month-field,
+html:not(.light) input[type="date"]::-webkit-datetime-edit-day-field,
+html:not(.light) input[type="date"]::-webkit-datetime-edit-year-field {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+}
+
+/* ==========================================
+   Withdrawal History & Report Panel Light Mode
+   ========================================== */
+html.light .withdrawal-panel-container {
+  background-color: #f8fafc !important;
+  background: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Upper Navigation Strip */
+html.light .withdrawal-panel-container .bg-\[\#0c0d15\],
+html.light .withdrawal-panel-container .bg-\[\#0a0b12\] {
+  background-color: #f1f5f9 !important;
+  border-bottom: 1.5px solid #cbd5e1 !important;
+}
+
+html.light .withdrawal-panel-container button.bg-white\/5 {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border: 1.5px solid #cbd5e1 !important;
+  font-weight: 800 !important;
+}
+
+html.light .withdrawal-panel-container button.bg-white\/5:hover {
+  background-color: #e2e8f0 !important;
+  color: #0284c7 !important;
+}
+
+html.light .withdrawal-panel-container .text-zinc-400,
+html.light .withdrawal-panel-container .text-gray-500 {
+  color: #334155 !important;
+  font-weight: 800 !important;
+}
+
+html.light .withdrawal-panel-container .text-white {
+  color: #0f172a !important;
+  font-weight: 900 !important;
+}
+
+/* Metrics Cards Strip */
+html.light .withdrawal-panel-container .bg-zinc-950\/20 {
+  background-color: #f8fafc !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+}
+
+html.light .withdrawal-panel-container .glass-card {
+  background-color: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .withdrawal-panel-container .glass-card .text-white {
+  color: #0f172a !important;
+  font-weight: 900 !important;
+}
+
+/* Tab Switcher Bar */
+html.light .withdrawal-panel-container .bg-\[\#0b0c15\] {
+  background-color: #f1f5f9 !important;
+  border-bottom: 1.5px solid #cbd5e1 !important;
+}
+
+html.light .withdrawal-panel-container .bg-\[\#0b0c15\] button {
+  color: #475569 !important;
+  font-weight: 800 !important;
+}
+
+html.light .withdrawal-panel-container .bg-\[\#0b0c15\] button.border-dragon-cyan {
+  color: #0284c7 !important;
+  border-bottom-color: #0284c7 !important;
+  font-weight: 900 !important;
+}
+
+/* Control & Filter Strip */
+html.light .withdrawal-panel-container .bg-white\/5 {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light .withdrawal-panel-container select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border: 1.5px solid #0284c7 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light .withdrawal-panel-container select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+html.light .withdrawal-panel-container input[type="date"] {
+  color-scheme: light !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border: 1.5px solid #0284c7 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light .withdrawal-panel-container button.bg-rose-500\/10 {
+  background-color: #ffe4e6 !important;
+  color: #be123c !important;
+  border: 1.5px solid #fda4af !important;
+  font-weight: 900 !important;
+}
+
+html.light .withdrawal-panel-container button.bg-rose-500\/10:hover {
+  background-color: #fecdd3 !important;
+  color: #9f1239 !important;
+}
+
+/* Ledger Table Container */
+html.light .withdrawal-panel-container .bg-zinc-950\/40 {
+  background-color: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .withdrawal-panel-container table thead tr {
+  background-color: #f1f5f9 !important;
+  border-bottom: 2px solid #cbd5e1 !important;
+}
+
+html.light .withdrawal-panel-container table thead th {
+  color: #1e293b !important;
+  font-weight: 900 !important;
+  font-size: 10px !important;
+}
+
+html.light .withdrawal-panel-container table tbody tr {
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+html.light .withdrawal-panel-container table tbody tr:hover {
+  background-color: #f8fafc !important;
+}
+
+html.light .withdrawal-panel-container table tbody td {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+html.light .withdrawal-panel-container table tbody td.text-gray-400,
+html.light .withdrawal-panel-container table tbody td.text-gray-500,
+html.light .withdrawal-panel-container table tbody td.text-zinc-400 {
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+
+html.light .withdrawal-panel-container table tbody td.text-white {
+  color: #0f172a !important;
+  font-weight: 900 !important;
+}
+
+/* Account Settings Forms in Light Mode */
+html.light .withdrawal-panel-container input[type="text"],
+html.light .withdrawal-panel-container input[type="number"] {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border: 1.5px solid #cbd5e1 !important;
+  font-weight: 800 !important;
+}
+
+html.light .withdrawal-panel-container input[type="text"]::placeholder,
+html.light .withdrawal-panel-container input[type="number"]::placeholder {
+  color: #94a3b8 !important;
+  font-weight: 600 !important;
+}
+
+/* Category Circular Image Border Styles & Light Mode Image Visibility Fix */
+html.light .category-circle-border,
+html:not(.dark) .category-circle-border,
+.category-circle-border {
+  border: 2.5px solid #ec4899 !important; /* Pink border in Light mode */
+  background-color: #0f172a !important; /* Dark contrast backdrop so all pictures & images remain 100% visible in Light mode */
+}
+
+/* Ensure images inside category circular borders and card image boxes are fully visible, opaque and crisp in both Light & Dark mode */
+.category-circle-border img,
+html.light .category-circle-border img,
+html.light [class*="category-circle-border"] img,
+html.light .glass-card img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+  filter: none !important;
+  background-color: #0f172a !important;
+}
+
+/* Dark Mode: Dark Theme Border */
+html.dark .category-circle-border,
+html:not(.light) .category-circle-border {
+  border: 2.5px solid rgba(255, 255, 255, 0.25) !important; /* Dark mode border */
+  background-color: #0f172a !important;
+}
+
+/* Light Mode Header Profile Info Card & Order Now Buttons Harmonization */
+html.light .header-profile-card,
+html.light [class*="header-profile-card"] {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border: 1.5px solid #cbd5e1 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light .header-profile-card h3,
+html.light .header-profile-card h4,
+html.light [class*="header-profile-card"] h3,
+html.light [class*="header-profile-card"] h4 {
+  color: #0f172a !important;
+  font-weight: 900 !important;
+  text-shadow: none !important;
+}
+
+html.light .header-profile-card p,
+html.light [class*="header-profile-card"] p {
+  color: #334155 !important;
+  text-shadow: none !important;
+}
+
+html.light .header-profile-card span:not([class*="bg-pink"]):not([class*="bg-dragon"]),
+html.light [class*="header-profile-card"] span:not([class*="bg-pink"]):not([class*="bg-dragon"]) {
+  color: #475569 !important;
+  text-shadow: none !important;
+}
+
+/* Dark Mode Header Profile Info Card */
+html.dark .header-profile-card,
+html:not(.light) .header-profile-card {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+html.dark .header-profile-card h3,
+html.dark .header-profile-card h4,
+html:not(.light) .header-profile-card h3,
+html:not(.light) .header-profile-card h4 {
+  color: #ffffff !important;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8) !important;
+}
+
+/* Profile Button Style in Light Mode - Always Pink */
+html.light .profile-btn,
+html.light button.profile-btn {
+  background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(236, 72, 153, 0.5) !important;
+  box-shadow: 0 4px 14px rgba(236, 72, 153, 0.3) !important;
+}
+
+html.light .profile-btn:hover,
+html.light button.profile-btn:hover {
+  background: linear-gradient(135deg, #db2777 0%, #e11d48 100%) !important;
+  color: #ffffff !important;
+}
+
+html.light .profile-btn svg,
+html.light button.profile-btn svg {
+  color: #ffffff !important;
+}
+
+/* Global Light Mode Pink/Magenta System - Zero Cyan in Light Mode */
+html.light {
+  --color-dragon-cyan: #ec4899;
+}
+
+/* 1. SOLID PRIMARY BUTTONS & BADGES (Pink Fill + Pure White Text) */
+html.light button.bg-pink-600:not([style*="background"]),
+html.light button.bg-pink-500:not([style*="background"]),
+html.light button.bg-rose-600:not([style*="background"]),
+html.light button.bg-dragon-cyan:not([style*="background"]),
+html.light a.bg-pink-600:not([style*="background"]),
+html.light a.bg-dragon-cyan:not([style*="background"]),
+html.light .bg-dragon-cyan:not([class*="/"]),
+html.light .order-now-btn,
+html.light .profile-btn {
+  background-color: #db2777 !important;
+  background-image: linear-gradient(135deg, #db2777 0%, #be123c 100%) !important;
+  color: #ffffff !important;
+  border-color: #be123c !important;
+  box-shadow: 0 4px 12px rgba(219, 39, 119, 0.25) !important;
+}
+
+/* Ensure ALL text and icons inside SOLID primary buttons are pure white */
+html.light button.bg-pink-600:not([style*="background"]) *,
+html.light button.bg-pink-500:not([style*="background"]) *,
+html.light button.bg-rose-600:not([style*="background"]) *,
+html.light button.bg-dragon-cyan:not([style*="background"]) *,
+html.light a.bg-pink-600:not([style*="background"]) *,
+html.light a.bg-dragon-cyan:not([style*="background"]) *,
+html.light .bg-dragon-cyan:not([class*="/"]) *,
+html.light .order-now-btn *,
+html.light .profile-btn * {
+  color: #ffffff !important;
+  fill: currentColor;
+}
+
+/* Active Category Filter Button Styling */
+html.light .active-category-btn {
+  background-color: #db2777 !important;
+  background-image: linear-gradient(135deg, #db2777 0%, #be123c 100%) !important;
+  color: #ffffff !important;
+  border-color: #be123c !important;
+  font-weight: 900 !important;
+  box-shadow: 0 4px 14px rgba(219, 39, 119, 0.3) !important;
+}
+
+html.light .active-category-btn * {
+  color: #ffffff !important;
+}
+
+html.dark .active-category-btn,
+html:not(.light) .active-category-btn {
+  background-color: #00f2fe !important;
+  background-image: none !important;
+  color: #0d101d !important;
+  border-color: #00f2fe !important;
+  font-weight: 900 !important;
+  box-shadow: 0 4px 14px rgba(0, 242, 254, 0.3) !important;
+}
+
+html.dark .active-category-btn *,
+html:not(.light) .active-category-btn * {
+  color: #0d101d !important;
+}
+
+/* BACK TO ALL CATEGORIES Button Styling */
+html.light .back-category-btn {
+  background-color: #f43f5e !important;
+  background-image: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%) !important;
+  color: #ffffff !important;
+  border-color: #e11d48 !important;
+  box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3) !important;
+}
+
+html.light .back-category-btn * {
+  color: #ffffff !important;
+}
+
+html.dark .back-category-btn,
+html:not(.light) .back-category-btn {
+  background-color: #00f2fe !important;
+  background-image: none !important;
+  color: #0d101d !important;
+  border-color: #00f2fe !important;
+  box-shadow: 0 4px 14px rgba(0, 242, 254, 0.3) !important;
+}
+
+html.dark .back-category-btn *,
+html:not(.light) .back-category-btn * {
+  color: #0d101d !important;
+}
+
+/* ORDER NOW Button Dark Mode Explicit Styling */
+html.dark .order-now-btn,
+html:not(.light) .order-now-btn {
+  background-color: #00f2fe !important;
+  background-image: none !important;
+  color: #0d101d !important;
+  border-color: #00f2fe !important;
+  box-shadow: 0 4px 14px rgba(0, 242, 254, 0.25) !important;
+}
+
+html.dark .order-now-btn *,
+html:not(.light) .order-now-btn * {
+  color: #0d101d !important;
+  fill: currentColor !important;
+}
+
+/* 2. HOVER STATE FOR SOLID BUTTONS IN LIGHT MODE: Dark Rose + White Text */
+html.light button.bg-pink-600:not([style*="background"]):hover,
+html.light button.bg-dragon-cyan:not([style*="background"]):hover,
+html.light a.bg-dragon-cyan:not([style*="background"]):hover,
+html.light .bg-dragon-cyan:hover,
+html.light .order-now-btn:hover,
+html.light .profile-btn:hover {
+  background-color: #be123c !important;
+  background-image: linear-gradient(135deg, #be123c 0%, #9f1239 100%) !important;
+  color: #ffffff !important;
+  border-color: #9f1239 !important;
+}
+
+html.light button.bg-pink-600:not([style*="background"]):hover *,
+html.light button.bg-dragon-cyan:not([style*="background"]):hover *,
+html.light a.bg-dragon-cyan:not([style*="background"]):hover *,
+html.light .bg-dragon-cyan:hover *,
+html.light .order-now-btn:hover *,
+html.light .profile-btn:hover * {
+  color: #ffffff !important;
+}
+
+/* 3. SOFT / OUTLINE / BADGE BUTTONS IN LIGHT MODE */
+html.light [class*="bg-dragon-cyan/"]:not(.view-products-btn):not(.order-btn-courier):not(.order-btn-location):not(.order-btn-block):not(.order-btn-delete) {
+  background-color: #e0f2fe !important;
+  color: #0369a1 !important;
+  border-color: #bae6fd !important;
+}
+
+html.light [class*="bg-dragon-cyan/"]:not(.view-products-btn):not(.order-btn-courier):not(.order-btn-location):not(.order-btn-block):not(.order-btn-delete) * {
+  color: #0369a1 !important;
+}
+
+html.light [class*="bg-dragon-cyan/"]:not(.view-products-btn):hover:not(.order-btn-courier):not(.order-btn-location):not(.order-btn-block):not(.order-btn-delete) {
+  background-color: #bae6fd !important;
+  color: #0284c7 !important;
+  border-color: #38bdf8 !important;
+}
+
+html.light [class*="bg-dragon-cyan/"]:not(.view-products-btn):hover:not(.order-btn-courier):not(.order-btn-location):not(.order-btn-block):not(.order-btn-delete) * {
+  color: #0284c7 !important;
+}
+
+html.light [class*="bg-pink-500/"],
+html.light [class*="bg-rose-500/"] {
+  background-color: #ffe4e6 !important;
+  color: #e11d48 !important;
+  border-color: #fecdd3 !important;
+}
+
+html.light [class*="bg-pink-500/"] *,
+html.light [class*="bg-rose-500/"] * {
+  color: #e11d48 !important;
+}
+
+/* VIEW PRODUCTS Button Solid Hot Pink Styling in Light Mode */
+html.light .view-products-btn,
+html.light button.view-products-btn {
+  background-color: #f43f5e !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 2px 6px rgba(244, 63, 94, 0.3) !important;
+}
+
+html.light .view-products-btn:hover,
+html.light button.view-products-btn:hover {
+  background-color: #e11d48 !important;
+  color: #ffffff !important;
+}
+
+html.light .view-products-btn *,
+html.light button.view-products-btn * {
+  color: #ffffff !important;
+  fill: currentColor !important;
+}
+
+/* VIEW PRODUCTS Button Solid Dragon Cyan Styling in Dark Mode */
+html.dark .view-products-btn,
+html.dark button.view-products-btn,
+html:not(.light) .view-products-btn,
+html:not(.light) button.view-products-btn {
+  background-color: #00f2fe !important;
+  background-image: none !important;
+  color: #0d101d !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0, 242, 254, 0.3) !important;
+}
+
+html.dark .view-products-btn:hover,
+html.dark button.view-products-btn:hover,
+html:not(.light) .view-products-btn:hover,
+html:not(.light) button.view-products-btn:hover {
+  background-color: #00d8e6 !important;
+  color: #0d101d !important;
+}
+
+html.dark .view-products-btn *,
+html.dark button.view-products-btn *,
+html:not(.light) .view-products-btn *,
+html:not(.light) button.view-products-btn * {
+  color: #0d101d !important;
+  fill: currentColor !important;
+}
+
+/* PROFILE Button Solid Dragon Cyan Styling in Dark Mode */
+html.dark .profile-btn,
+html.dark button.profile-btn,
+html:not(.light) .profile-btn,
+html:not(.light) button.profile-btn {
+  background-color: #00f2fe !important;
+  background-image: none !important;
+  color: #0d101d !important;
+  border-color: rgba(0, 242, 254, 0.4) !important;
+  box-shadow: 0 4px 14px rgba(0, 242, 254, 0.25) !important;
+}
+
+html.dark .profile-btn:hover,
+html.dark button.profile-btn:hover,
+html:not(.light) .profile-btn:hover,
+html:not(.light) button.profile-btn:hover {
+  background-color: #00d8e6 !important;
+  color: #0d101d !important;
+}
+
+html.dark .profile-btn *,
+html.dark button.profile-btn *,
+html:not(.light) .profile-btn *,
+html:not(.light) button.profile-btn * {
+  color: #0d101d !important;
+  fill: currentColor !important;
+}
+
+/* 4. ALL CYAN COLOR REPLACEMENTS IN LIGHT MODE (Pink/Rose/Magenta Override) */
+html.light [class*="text-dragon-cyan"],
+html.light [class*="text-[#00f2ff]"],
+html.light .text-dragon-cyan {
+  color: #db2777 !important;
+}
+
+html.light [class*="border-dragon-cyan"],
+html.light [class*="border-[#00f2ff]"],
+html.light .border-dragon-cyan {
+  border-color: #f472b6 !important;
+}
+
+html.light [class*="from-dragon-cyan"],
+html.light [class*="from-[#00f2ff]"] {
+  --tw-gradient-from: #ec4899 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgba(236, 72, 153, 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-from), var(--tw-gradient-to)) !important;
+}
+
+html.light [class*="to-dragon-cyan"],
+html.light [class*="to-[#00f2ff]"] {
+  --tw-gradient-to: #e11d48 var(--tw-gradient-to-position) !important;
+}
+
+html.light [class*="shadow-dragon-cyan"] {
+  box-shadow: 0 4px 14px rgba(236, 72, 153, 0.25) !important;
+}
+
+/* 5. OVERLAY BADGES ON PRODUCT IMAGES (Ensure Dark Overlay + White/Pink Text stays readable) */
+html.light .absolute[class*="bg-black"],
+html.light [class*="absolute"][class*="bg-black"],
+html.light .absolute.bg-black\/75,
+html.light .absolute.bg-black\/60,
+html.light [class*="absolute"][class*="bg-black/"] {
+  background-color: rgba(15, 23, 42, 0.85) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+html.light .absolute[class*="bg-black"] *,
+html.light [class*="absolute"][class*="bg-black"] *,
+html.light [class*="absolute"][class*="bg-black/"] * {
+  color: #ffffff !important;
+}
+
+html.light .absolute[class*="bg-rose-500"],
+html.light .absolute[class*="bg-pink-500"],
+html.light [class*="absolute"][class*="bg-rose-500"],
+html.light [class*="absolute"][class*="bg-pink-500"] {
+  background-color: #ec4899 !important;
+  color: #ffffff !important;
+}
+
+html.light .absolute[class*="bg-rose-500"] *,
+html.light .absolute[class*="bg-pink-500"] * {
+  color: #ffffff !important;
+}
+
+/* 6. LIGHT MODE TEXT LEGIBILITY & CONTRAST IN CARDS, MODALS, HEADERS */
+html.light .glass-card,
+html.light .order-card-container,
+html.light .chatroom-header,
+html.light .chat-report-modal,
+html.light .withdrawal-panel-container {
+  color: #0f172a !important;
+}
+
+/* Heading and text elements inside light mode containers: dark text unless on solid button or badge */
+html.light h1:not(button *):not(.absolute *):not(.social-post-bg-theme *):not([class*="bg-pink"]:not([class*="/"]) *):not([class*="bg-rose"]:not([class*="/"]) *),
+html.light h2:not(button *):not(.absolute *):not(.social-post-bg-theme *):not([class*="bg-pink"]:not([class*="/"]) *):not([class*="bg-rose"]:not([class*="/"]) *),
+html.light h3:not(button *):not(.absolute *):not(.social-post-bg-theme *):not([class*="bg-pink"]:not([class*="/"]) *):not([class*="bg-rose"]:not([class*="/"]) *),
+html.light h4:not(button *):not(.absolute *):not(.social-post-bg-theme *):not([class*="bg-pink"]:not([class*="/"]) *):not([class*="bg-rose"]:not([class*="/"]) *),
+html.light h5:not(button *):not(.absolute *):not(.social-post-bg-theme *):not([class*="bg-pink"]:not([class*="/"]) *):not([class*="bg-rose"]:not([class*="/"]) *),
+html.light h6:not(button *):not(.absolute *):not(.social-post-bg-theme *):not([class*="bg-pink"]:not([class*="/"]) *):not([class*="bg-rose"]:not([class*="/"]) *) {
+  color: #0f172a !important;
+}
+
+html.light p:not(button *):not(.absolute *):not(.social-post-bg-theme *):not([class*="bg-pink"]:not([class*="/"]) *):not([class*="bg-rose"]:not([class*="/"]) *),
+html.light span.text-white:not(button *):not(.absolute *):not(.social-post-bg-theme *):not([class*="bg-pink"]:not([class*="/"]) *):not([class*="bg-rose"]:not([class*="/"]) *),
+html.light div.text-white:not(button *):not(.absolute *):not(.social-post-bg-theme *):not([class*="bg-pink"]:not([class*="/"]) *):not([class*="bg-rose"]:not([class*="/"]) *) {
+  color: #0f172a !important;
+}
+
+html.light .text-gray-400:not(.social-post-bg-theme *):not(button):not(button *),
+html.light .text-zinc-400:not(.social-post-bg-theme *):not(button):not(button *),
+html.light .text-gray-300:not(.social-post-bg-theme *):not(button):not(button *),
+html.light .text-zinc-300:not(.social-post-bg-theme *):not(button):not(button *),
+html.light .text-gray-500:not(.social-post-bg-theme *):not(button):not(button *),
+html.light .text-zinc-500:not(.social-post-bg-theme *):not(button):not(button *) {
+  color: #475569 !important;
+}
+
+div#root:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(5) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > span:nth-of-type(1) {
+  color: #ba13da !important;
+}
+
+/* Ensure TikTok original badge and SVG icon colors stay intact in light mode */
+html.light .tiktok-badge-container,
+html.dark .tiktok-badge-container,
+html.light [data-brand="tiktok"],
+html.dark [data-brand="tiktok"] {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+html.light .tiktok-svg .tiktok-path-1,
+html.dark .tiktok-svg .tiktok-path-1 {
+  fill: #00F2FE !important;
+}
+
+html.light .tiktok-svg .tiktok-path-2,
+html.dark .tiktok-svg .tiktok-path-2 {
+  fill: #FF0050 !important;
+}
+
+html.light .tiktok-badge-container .tiktok-svg .tiktok-path-3,
+html.dark .tiktok-badge-container .tiktok-svg .tiktok-path-3,
+html.light [data-brand="tiktok"] .tiktok-svg .tiktok-path-3,
+html.dark [data-brand="tiktok"] .tiktok-svg .tiktok-path-3,
+html.light .tiktok-auth-btn .tiktok-svg .tiktok-path-3,
+html.dark .tiktok-auth-btn .tiktok-svg .tiktok-path-3 {
+  fill: #FFFFFF !important;
+}
+
+/* Comprehensive Dark Mode Overrides for Inventory, My Site, and MagicBox */
+html:not(.light) .bg-\[\#f8f9fa\],
+html.dark .bg-\[\#f8f9fa\] {
+  background-color: #07090e !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Inventory Component Overrides in Dark Mode */
+html:not(.light) .inventory-container .bg-white,
+html.dark .inventory-container .bg-white {
+  background-color: #0f131f !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html:not(.light) .inventory-container .text-slate-800,
+html:not(.light) .inventory-container .text-slate-900,
+html:not(.light) .inventory-container .text-\[\#0f172a\],
+html.dark .inventory-container .text-slate-800,
+html.dark .inventory-container .text-slate-900,
+html.dark .inventory-container .text-\[\#0f172a\] {
+  color: #ffffff !important;
+}
+
+html:not(.light) .inventory-container .text-\[\#f43f5e\],
+html:not(.light) .inventory-container .text-pink-600,
+html.dark .inventory-container .text-\[\#f43f5e\],
+html.dark .inventory-container .text-pink-600 {
+  color: #00f2ff !important;
+}
+
+html:not(.light) .inventory-container .bg-pink-50,
+html:not(.light) .inventory-container .bg-\[\#fce7f3\],
+html.dark .inventory-container .bg-pink-50,
+html.dark .inventory-container .bg-\[\#fce7f3\] {
+  background-color: rgba(0, 242, 255, 0.12) !important;
+  border-color: rgba(0, 242, 255, 0.25) !important;
+  color: #00f2ff !important;
+}
+
+html:not(.light) .inventory-container .bg-slate-50,
+html.dark .inventory-container .bg-slate-50 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* My Site Showcase Overrides in Dark Mode */
+html:not(.light) .mysite-banner-card,
+html.dark .mysite-banner-card {
+  background-color: #0d101d !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html:not(.light) .mysite-banner-title,
+html.dark .mysite-banner-title {
+  color: #ffffff !important;
+}
+
+html:not(.light) .mysite-banner-accent,
+html.dark .mysite-banner-accent {
+  color: #00f2ff !important;
+}
+
+html:not(.light) .showcase-container .bg-white,
+html.dark .showcase-container .bg-white {
+  background-color: #0f131f !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* MagicBox Component Overrides in Dark Mode */
+html:not(.light) .magicbox-tab-bar,
+html.dark .magicbox-tab-bar {
+  background-color: #0f131f !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html:not(.light) .magicbox-card,
+html.dark .magicbox-card {
+  background-color: #0f131f !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html:not(.light) .magicbox-card .text-slate-800,
+html.dark .magicbox-card .text-slate-800 {
+  color: #ffffff !important;
+}
+
+
+/* ==========================================================================
+   CREATE POST CONTAINER - DUAL THEME (LIGHT & DARK MODE) HARMONY
+   ========================================================================== */
+
+/* Dark Mode (Default) */
+.create-post-card {
+  background: linear-gradient(135deg, rgba(18, 21, 31, 0.95) 0%, rgba(10, 12, 18, 0.98) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.create-post-header-border {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.create-post-role-pill {
+  background: rgba(0, 0, 0, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.create-post-role-btn-active {
+  background: #00f2fe !important;
+  color: #08090d !important;
+  box-shadow: 0 4px 12px rgba(0, 242, 254, 0.3) !important;
+}
+
+.create-post-textarea-container {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.create-post-textarea-container:focus-within {
+  border-color: rgba(0, 242, 254, 0.6) !important;
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.15) !important;
+}
+
+.create-post-textarea,
+.create-post-textarea:focus,
+html.light .create-post-textarea,
+html.light .create-post-textarea:focus,
+html.dark .create-post-textarea,
+html.dark .create-post-textarea:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  color: #ffffff !important;
+}
+
+.create-post-textarea::placeholder {
+  color: #6b7280 !important;
+}
+
+.create-post-options-panel {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.create-post-category-trigger {
+  background: rgba(0, 0, 0, 0.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+}
+
+.create-post-category-trigger:hover {
+  border-color: rgba(0, 242, 254, 0.5) !important;
+}
+
+.create-post-category-menu {
+  background: #0d111a !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8) !important;
+}
+
+.create-post-category-item-hover {
+  color: #d1d5db !important;
+}
+
+.create-post-category-item-hover:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+.create-post-category-item-active {
+  background: rgba(0, 242, 254, 0.15) !important;
+  color: #00f2fe !important;
+  border: 1px solid rgba(0, 242, 254, 0.3) !important;
+}
+
+.create-post-photo-btn {
+  background-color: #5bc93f !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.create-post-photo-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.create-post-photo-btn.active {
+  background: rgba(0, 242, 254, 0.15) !important;
+  border-color: rgba(0, 242, 254, 0.4) !important;
+  color: #00f2fe !important;
+}
+
+.create-post-publish-btn {
+  background: linear-gradient(135deg, #00f2fe 0%, #00c6ff 100%) !important;
+  color: #000000 !important;
+  font-weight: 900 !important;
+  box-shadow: 0 8px 25px rgba(0, 242, 254, 0.3) !important;
+}
+
+.create-post-publish-btn:hover {
+  background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 100%) !important;
+  color: #000000 !important;
+  box-shadow: 0 8px 30px rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Light Mode Overrides */
+html.light .create-post-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08) !important;
+  color: #0f172a !important;
+}
+
+html.light .create-post-card h4 {
+  color: #0f172a !important;
+}
+
+html.light .create-post-card .text-gray-400 {
+  color: #64748b !important;
+}
+
+html.light .create-post-header-border {
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+html.light .create-post-role-pill {
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+html.light .create-post-role-pill .text-gray-400 {
+  color: #64748b !important;
+}
+
+html.light .create-post-role-btn-active {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25) !important;
+}
+
+html.light .create-post-textarea-container {
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+html.light .create-post-textarea-container:focus-within {
+  border-color: #0284c7 !important;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15) !important;
+}
+
+html.light .create-post-textarea:not(.social-post-bg-theme textarea),
+html.light .create-post-textarea:not(.social-post-bg-theme textarea):focus {
+  color: #0f172a !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+html.light .create-post-textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+html.light .create-post-options-panel {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+html.light .create-post-category-trigger {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light .create-post-category-trigger:hover {
+  border-color: #0284c7 !important;
+}
+
+html.light .create-post-category-menu {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.15) !important;
+}
+
+html.light .create-post-category-item-hover {
+  color: #334155 !important;
+}
+
+html.light .create-post-category-item-hover:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+html.light .create-post-category-item-active {
+  background: #e0f2fe !important;
+  color: #0369a1 !important;
+  border: 1px solid #bae6fd !important;
+}
+
+html.light .create-post-photo-btn {
+  background-color: #5bc93f !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #ffffff !important;
+}
+
+html.light .create-post-photo-btn:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+html.light .create-post-photo-btn.active {
+  background: #e0f2fe !important;
+  border-color: #0284c7 !important;
+  color: #0369a1 !important;
+}
+
+html.light .create-post-publish-btn {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.3) !important;
+}
+
+html.light .create-post-publish-btn:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #075985 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 25px rgba(3, 105, 161, 0.4) !important;
+}
+
+/* ==========================================================
+   BUTTON STYLE PRESERVATION & CONTAINER LIGHT/DARK HARMONY
+   ========================================================== */
+
+/* 1. Preserve background & text colors of buttons/links with explicit inline styles in BOTH Light & Dark mode */
+html.light button[style*="background"],
+html.dark button[style*="background"],
+button[style*="background"],
+html.light a[style*="background"],
+html.dark a[style*="background"],
+a[style*="background"] {
+  opacity: 1 !important;
+}
+
+/* 2. Prevent global text/icon color overrides from altering text/icons inside inline-styled buttons */
+html.light button[style] svg,
+html.light button[style] svg *,
+html.light a[style] svg,
+html.light a[style] svg *,
+html.dark button[style] svg,
+html.dark button[style] svg *,
+html.dark a[style] svg,
+html.dark a[style] svg * {
+  color: inherit;
+}
+
+/* 3. Container Card Perfection across Light and Dark themes */
+html.light .glass-card:not(.order-card-container) {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+html.dark .glass-card:not(.order-card-container) {
+  background-color: rgba(13, 13, 18, 0.85) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* ==========================================================
+   PERMANENT WHITE TEXT FIX FOR COURIER BOOKING & FORWARD BUTTONS
+   ========================================================== */
+html.light .courier-booking-btn,
+html.dark .courier-booking-btn,
+.courier-booking-btn,
+html.light .forward-action-btn,
+html.dark .forward-action-btn,
+.forward-action-btn,
+html.light button[style*="background"],
+html.dark button[style*="background"],
+button[style*="background"],
+html.light button[style*="5b0ee9"],
+html.light button[style*="2e8a4f"] {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html.light .courier-booking-btn *,
+html.dark .courier-booking-btn *,
+.courier-booking-btn *,
+html.light .forward-action-btn *,
+html.dark .forward-action-btn *,
+.forward-action-btn *,
+html.light button[style*="background"] *,
+html.dark button[style*="background"] *,
+button[style*="background"] *,
+html.light button[style*="5b0ee9"] *,
+html.light button[style*="2e8a4f"] *,
+html.light .courier-booking-btn svg,
+html.light .courier-booking-btn svg *,
+html.light .forward-action-btn svg,
+html.light .forward-action-btn svg * {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* ==========================================================
+   MESSENGER SENT CHAT BUBBLE WHITE TEXT ENFORCEMENT (LIGHT & DARK)
+   ========================================================== */
+.msg-bubble-own,
+html.light .msg-bubble-own,
+html.dark .msg-bubble-own,
+.msg-bubble-own *:not(.order-card-container):not(.order-card-container *):not(.msg-delete-btn):not(.msg-delete-btn *):not(.voice-speed-btn):not(.voice-speed-btn *),
+html.light .msg-bubble-own *:not(.order-card-container):not(.order-card-container *):not(.msg-delete-btn):not(.msg-delete-btn *):not(.voice-speed-btn):not(.voice-speed-btn *),
+html.dark .msg-bubble-own *:not(.order-card-container):not(.order-card-container *):not(.msg-delete-btn):not(.msg-delete-btn *):not(.voice-speed-btn):not(.voice-speed-btn *),
+.msg-bubble-own p:not(.order-card-container *),
+html.light .msg-bubble-own p:not(.order-card-container *),
+html.dark .msg-bubble-own p:not(.order-card-container *),
+.msg-bubble-own span:not(.order-card-container *):not(.msg-delete-btn *),
+html.light .msg-bubble-own span:not(.order-card-container *):not(.msg-delete-btn *),
+html.dark .msg-bubble-own span:not(.order-card-container *):not(.msg-delete-btn *) {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Explicit Delete Button Styling for Light & Dark Mode */
+.msg-delete-btn,
+html.light .msg-delete-btn,
+html.light .msg-bubble-own .msg-delete-btn {
+  background-color: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  color: #ef4444 !important;
+  -webkit-text-fill-color: #ef4444 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+}
+
+html.light .msg-delete-btn svg,
+html.light .msg-delete-btn svg *,
+html.light .msg-bubble-own .msg-delete-btn svg,
+html.light .msg-bubble-own .msg-delete-btn svg * {
+  color: #ef4444 !important;
+  stroke: #ef4444 !important;
+  -webkit-text-fill-color: #ef4444 !important;
+}
+
+html.light .msg-delete-btn:hover,
+html.light .msg-bubble-own .msg-delete-btn:hover {
+  background-color: #fee2e2 !important;
+  border-color: #ef4444 !important;
+  color: #b91c1c !important;
+  -webkit-text-fill-color: #b91c1c !important;
+}
+
+html.light .msg-delete-btn:hover svg,
+html.light .msg-delete-btn:hover svg * {
+  color: #b91c1c !important;
+  stroke: #b91c1c !important;
+}
+
+html.dark .msg-delete-btn,
+html.dark .msg-bubble-own .msg-delete-btn {
+  background-color: #242526 !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: #f87171 !important;
+  -webkit-text-fill-color: #f87171 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4) !important;
+}
+
+html.dark .msg-delete-btn svg,
+html.dark .msg-delete-btn svg * {
+  color: #f87171 !important;
+  stroke: #f87171 !important;
+  -webkit-text-fill-color: #f87171 !important;
+}
+
+html.dark .msg-delete-btn:hover,
+html.dark .msg-bubble-own .msg-delete-btn:hover {
+  background-color: #450a0a !important;
+  border-color: #ef4444 !important;
+  color: #fca5a5 !important;
+  -webkit-text-fill-color: #fca5a5 !important;
+}
+
+.msg-bubble-own,
+html.light .msg-bubble-own,
+html.dark .msg-bubble-own {
+  background: linear-gradient(135deg, #0084ff 0%, #00a2ff 35%, #6d4aff 72%, #9d4edd 100%) !important;
+}
+
+/* Mini Report Header Light / Dark Mode Rules */
+.chat-report-header,
+html.light .chat-report-header,
+html.light div#root:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(5) > div:nth-of-type(1) > div:nth-of-type(1) {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+html.light .chat-report-header *,
+html.light div#root:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(5) > div:nth-of-type(1) > div:nth-of-type(1) * {
+  color: #000000 !important;
+}
+
+html.light .chat-report-header p,
+html.light .chat-report-header span {
+  color: #475569 !important;
+}
+
+html.dark .chat-report-header,
+html.dark div#root:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(5) > div:nth-of-type(1) > div:nth-of-type(1),
+div#root:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(5) > div:nth-of-type(1) > div:nth-of-type(1) {
+  background-color: #000000 !important;
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+html.dark .chat-report-header *,
+html.dark div#root:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(5) > div:nth-of-type(1) > div:nth-of-type(1) * {
+  color: #ffffff !important;
+}
+
+html.dark .chat-report-header p,
+html.dark .chat-report-header span {
+  color: #d1d5db !important;
+}
+
+/* ==========================================================
+   MESSENGER CHAT INPUT BAR (NO DOUBLE BORDER IN LIGHT MODE)
+   ========================================================== */
+.chat-input-bar {
+  border-top-width: 1px !important;
+}
+
+html.light .chat-input-bar {
+  background-color: #ffffff !important;
+  border-top: 1px solid #e4e6eb !important;
+}
+
+html.dark .chat-input-bar {
+  background-color: #18191a !important;
+  border-top: 1px solid #242526 !important;
+}
+
+/* Single Pill Input Shape */
+.chat-input-pill,
+html.light .chat-input-pill {
+  background-color: #f0f2f5 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+html.dark .chat-input-pill {
+  background-color: #3a3b3c !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Chat Input Textarea Reset - 0 border, 0 outline */
+.chat-input-textarea,
+html.light .chat-input-textarea,
+html.light .chat-input-textarea:focus,
+html.dark .chat-input-textarea,
+html.dark .chat-input-textarea:focus,
+.chat-input-bar textarea,
+html.light .chat-input-bar textarea,
+html.light .chat-input-bar textarea:focus,
+html.dark .chat-input-bar textarea,
+html.dark .chat-input-bar textarea:focus {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+html.light .chat-input-textarea {
+  color: #050505 !important;
+}
+
+html.dark .chat-input-textarea {
+  color: #e4e6eb !important;
+}
+
+
+
+
