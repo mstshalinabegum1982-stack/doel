@@ -1,0 +1,12 @@
+{
+  "name": "DOELpro Commerce & Messenger",
+  "description": "Premium, futuristic SaaS social commerce super app with cinematic landing page builders, real-time messaging, and AI automation.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

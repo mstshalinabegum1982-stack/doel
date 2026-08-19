@@ -1,0 +1,246 @@
+{
+  "entities": {
+    "landingPages": {
+      "title": "Landing Page Draft",
+      "description": "Configuration for a generated product landing page.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "storeName": { "type": "string" },
+        "logo": { "type": "string", "description": "Base64 logo image" },
+        "productId": { "type": "string", "description": "Reference to inventory item" },
+        "productDetails": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "details": { "type": "string" },
+            "price": { "type": "number" },
+            "offerPrice": { "type": "number" },
+            "discount": { "type": "number" },
+            "colors": { "type": "array", "items": { "type": "string" } },
+            "sizes": { "type": "array", "items": { "type": "string" } },
+            "weight": { "type": "string" },
+            "warranty": { "type": "boolean" },
+            "guarantee": { "type": "boolean" },
+            "offerDuration": { "type": "number" }
+          }
+        },
+        "deliveryCharges": {
+          "type": "object",
+          "properties": {
+            "inside": { "type": "number" },
+            "outside": { "type": "number" }
+          }
+        },
+        "paymentSettings": {
+          "type": "object",
+          "properties": {
+            "cod": { "type": "boolean" },
+            "advance": { "type": "boolean" }
+          }
+        },
+        "shortDetails": { "type": "string" },
+        "theme": { 
+          "type": "string", 
+          "enum": ["light", "dark", "galaxy", "bubble", "cinematic"] 
+        },
+        "extraImages": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of 4 optional base64 images"
+        },
+        "messagingChannel": { 
+          "type": "string",
+          "enum": ["whatsapp", "telegram", "viber", "line", "wechatmini"]
+        },
+        "email": { "type": "string", "format": "email" },
+        "socialLinks": {
+          "type": "object",
+          "properties": {
+            "youtube": { "type": "string" },
+            "tiktok": { "type": "string" },
+            "fbPage": { "type": "string" },
+            "instagram": { "type": "string" }
+          }
+        },
+        "country": { "type": "string" },
+        "orderCartConfig": { "type": "object", "description": "AI-generated cart configuration" },
+        "status": { "type": "string", "enum": ["draft", "published"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "storeName", "status"]
+    },
+    "fraudBlacklist": {
+      "title": "Fraud Blacklist",
+      "description": "Fraud phone number or browser token blacklist metadata.",
+      "type": "object",
+      "properties": {
+        "sellerId": { "type": "string" },
+        "type": { "type": "string", "enum": ["phone", "token"] },
+        "value": { "type": "string" },
+        "blockedAt": { "type": "string", "format": "date-time" },
+        "attemptsCount": { "type": "number" },
+        "associatedNumbers": { "type": "array", "items": { "type": "string" } },
+        "associatedTokens": { "type": "array", "items": { "type": "string" } },
+        "reason": { "type": "string" }
+      },
+      "required": ["sellerId", "type", "value"]
+    },
+    "delegatedAccess": {
+      "title": "Delegated Access Configuration",
+      "description": "Cross-user permissions mapping for Inventory, Landing Pages, and Orders.",
+      "type": "object",
+      "properties": {
+        "grantorId": { "type": "string" },
+        "grantorName": { "type": "string" },
+        "granteeId": { "type": "string" },
+        "granteeName": { "type": "string" },
+        "allowInventory": { "type": "boolean" },
+        "allowLandingPages": { "type": "boolean" },
+        "allowOrders": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["pending", "accepted"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["grantorId", "granteeId", "allowInventory", "allowLandingPages", "allowOrders"]
+    },
+    "landingPageViews": {
+      "title": "Landing Page View Record",
+      "description": "Analytics tracking views and session behavior on landing pages",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "The landing page creator ID" },
+        "pageId": { "type": "string", "description": "The landing page ID" },
+        "deviceToken": { "type": "string" },
+        "ip": { "type": "string" },
+        "country": { "type": "string" },
+        "district": { "type": "string" },
+        "gender": { "type": "string" },
+        "durationSeconds": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "pageId", "deviceToken"]
+    },
+    "hiddenMerchantFiles": {
+      "title": "Hidden Merchant Files",
+      "description": "Merchant hidden cache files including custom sub-area delivery charges and Gemini Q&A caches",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "customDeliveryCharges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "area": { "type": "string" },
+              "charge": { "type": "number" }
+            },
+            "required": ["area", "charge"]
+          }
+        },
+        "qaCache": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "question": { "type": "string" },
+              "answer": { "type": "string" },
+              "timestamp": { "type": "string", "format": "date-time" }
+            },
+            "required": ["question", "answer", "timestamp"]
+          }
+        },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId"]
+    },
+    "courierConfigs": {
+      "title": "Courier Configs",
+      "description": "User API credentials for local couriers (e.g. Steadfast, Pathao, RedX, etc.)",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "country": { "type": "string" },
+        "courierName": { "type": "string" },
+        "credentials": { "type": "object", "description": "Key-value map of courier specific API credentials" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "country", "courierName", "credentials"]
+    },
+    "catalogSubscriptions": {
+      "title": "Catalog Subscriptions",
+      "description": "User catalog access subscription state, trial info, plan tier, and payment references.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "paymentStatus": { "type": "string", "enum": ["trial", "pending", "approved"] },
+        "trialStartedAt": { "type": "string", "format": "date-time" },
+        "trialExpiresAt": { "type": "string", "format": "date-time" },
+        "selectedPlan": { "type": "string" },
+        "selectedCurrency": { "type": "string" },
+        "paymentPhone": { "type": "string" },
+        "paymentTrxId": { "type": "string" },
+        "paymentSubmittedAt": { "type": "string", "format": "date-time" },
+        "activeUntil": { "type": "string", "format": "date-time" },
+        "paymentApprovedAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "paymentStatus"]
+    },
+    "productReviews": {
+      "title": "Product Review",
+      "description": "Customer feedback and ratings for pro-website products, along with merchant replies.",
+      "type": "object",
+      "properties": {
+        "websiteId": { "type": "string" },
+        "productId": { "type": "string" },
+        "productName": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerEmail": { "type": "string" },
+        "customerPhoto": { "type": "string" },
+        "rating": { "type": "number" },
+        "comment": { "type": "string" },
+        "reply": { "type": "string" },
+        "replyAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["websiteId", "productId", "customerName", "customerEmail", "rating", "comment", "createdAt"]
+    }
+  },
+  "firestore": {
+    "product_reviews/{reviewId}": {
+      "schema": "productReviews",
+      "description": "Customer product reviews and ratings linked to pro-websites."
+    },
+    "landing-pages": {
+      "schema": "landingPages",
+      "description": "User created landing page drafts."
+    },
+    "landing-pages/{pageId}/views/{viewId}": {
+      "schema": "landingPageViews",
+      "description": "Visitor traffic and engagement stats tracked per landing page."
+    },
+    "fraud_blacklist": {
+      "schema": "fraudBlacklist",
+      "description": "Blocked device tokens and phone numbers mapped to prevent fraud orders."
+    },
+    "delegated_access": {
+      "schema": "delegatedAccess",
+      "description": "Permissions granted between users."
+    },
+    "hidden_merchant_files": {
+      "schema": "hiddenMerchantFiles",
+      "description": "Merchant hidden metadata cache files used to store sub-area charges and Q&A cache for AI bots"
+    },
+    "courier_configs": {
+      "schema": "courierConfigs",
+      "description": "Configured local courier company integrations and their API keys/credentials."
+    },
+    "catalog_subscriptions/{userId}": {
+      "schema": "catalogSubscriptions",
+      "description": "Individual merchant subscription statuses and catalog locking gates."
+    }
+  }
+}

@@ -1,0 +1,455 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() { return request.auth != null; }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    
+    // Basic Admin (Safe for lists, no DB lookups)
+    function isBasicAdmin() {
+      return isSignedIn() && (
+        request.auth.token.get('admin', false) == true ||
+        request.auth.token.get('role', '') == 'admin'
+      );
+    }
+    
+    // Full Admin (Use for gets/writes, safe for single doc ops)
+    function isAdmin() {
+      return isBasicAdmin() || (
+        isSignedIn() && (
+          (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true) ||
+          (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', '') == 'admin') ||
+          exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        )
+      );
+    }
+
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    
+    function isOwnerOrAdmin(data) {
+      return isSignedIn() && (data.get('userId', '') == request.auth.uid || isAdmin());
+    }
+
+    function hasDelegatedAccess(ownerId, permission) {
+      return isSignedIn() && 
+             exists(/databases/$(database)/documents/delegated_access/$(ownerId + '_' + request.auth.uid)) &&
+             get(/databases/$(database)/documents/delegated_access/$(ownerId + '_' + request.auth.uid)).data.get(permission, false) == true &&
+             get(/databases/$(database)/documents/delegated_access/$(ownerId + '_' + request.auth.uid)).data.get('status', 'pending') == 'accepted';
+    }
+
+    // --- Validation Helpers ---
+
+    function isValidUser(data) {
+      return (!data.keys().hasAny(['name']) || (data.name is string && data.name.size() <= 200)) &&
+             (!data.keys().hasAny(['phone']) || (data.phone is string && data.phone.size() <= 50)) &&
+             (!data.keys().hasAny(['email']) || (data.email is string && data.email.size() <= 200)) &&
+             (!data.keys().hasAny(['createdAt']) || (data.createdAt is string && data.createdAt.size() <= 100));
+    }
+
+    function isValidOrder(data) {
+      return (!data.keys().hasAny(['participants']) || (data.participants is list && data.participants.size() >= 1 && data.participants.size() <= 10)) &&
+             data.receiverId is string && data.receiverId.size() <= 128 &&
+             data.senderId is string && data.senderId.size() <= 128 &&
+             data.productName is string && data.productName.size() > 0 && data.productName.size() <= 1000 &&
+             data.status in ['pending', 'confirmed', 'shipping', 'delivered', 'paid', 'return', 'fraud_return', 'deleted', 'cancelled', 'paid_delivery', 'paid_return'] &&
+             data.createdAt is string && data.createdAt.size() <= 50 &&
+             data.sellPrice is number &&
+             (!data.keys().hasAny(['buyPrice']) || data.buyPrice is number) &&
+             (!data.keys().hasAny(['deliveryCharge']) || data.deliveryCharge is number) &&
+             (!data.keys().hasAny(['customerName']) || (data.customerName is string && data.customerName.size() <= 300)) &&
+             (!data.keys().hasAny(['customerPhone']) || (data.customerPhone is string && data.customerPhone.size() <= 100)) &&
+             (!data.keys().hasAny(['customerAddress']) || (data.customerAddress is string && data.customerAddress.size() <= 2048)) &&
+             (!data.keys().hasAny(['productImage']) || (data.productImage is string && data.productImage.size() <= 5000000)) &&
+             (!data.keys().hasAny(['gpsAddress']) || (data.gpsAddress is string && data.gpsAddress.size() <= 2048)) &&
+             (!data.keys().hasAny(['latitude']) || data.latitude is number || data.latitude == null) &&
+             (!data.keys().hasAny(['longitude']) || data.longitude is number || data.longitude == null) &&
+             (!data.keys().hasAny(['trackingMethod']) || data.trackingMethod in ['manual', 'gps', 'none']);
+    }
+
+    function isValidChat(data) {
+      return data.participants is list && 
+              data.participants.size() >= 1 &&
+              data.participants.size() <= 10 &&
+              (data.get('updatedAt', '') is string && data.get('updatedAt', '').size() <= 50);
+    }
+
+    function isValidMessage(data) {
+      return (data.get('senderId', '') == request.auth.uid || 
+              data.get('senderId', '') == 'system' || 
+              data.get('senderId', '') == 'customer_public' || 
+              data.get('type', '') == 'call' || 
+              (data.get('type', '') == 'payment_request' && data.get('paymentData', {}).get('status', '') == 'paid')) &&
+             (data.get('text', null) == null || (data.get('text', '') is string && data.get('text', '').size() <= 10000)) &&
+             data.get('type', '') in ['text', 'image', 'order', 'payment_request', 'deleted', 'call', 'voice'] &&
+             data.get('createdAt', '') is string && data.get('createdAt', '').size() <= 50;
+    }
+
+    function isValidInventory(data) {
+      return (data.get('userId', '') == request.auth.uid || hasDelegatedAccess(data.get('userId', ''), 'allowInventory') || isAdmin()) &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 200 &&
+             data.buyPrice is number &&
+             data.sellPrice is number &&
+             data.stock is number;
+    }
+
+    function isValidProWebsite(data) {
+      return (data.get('userId', '') == request.auth.uid || hasDelegatedAccess(data.get('userId', ''), 'allowLandingPages') || isAdmin()) &&
+             data.get('brandName', '') is string && data.get('brandName', '').size() <= 1000 &&
+             data.get('isPublic', false) is bool &&
+             (data.get('updatedAt', '') is string || data.get('createdAt', '') is string);
+    }
+
+    function isValidLandingPage(data) {
+      return (data.get('userId', '') == request.auth.uid || hasDelegatedAccess(data.get('userId', ''), 'allowLandingPages') || isAdmin()) &&
+             data.get('storeName', '') is string && data.get('storeName', '').size() <= 1000 &&
+             data.get('status', 'draft') in ['draft', 'published'];
+    }
+
+    function isValidHiddenMerchantFile(data) {
+      return data.userId is string && data.userId.size() <= 128 &&
+             (!data.keys().hasAny(['updatedAt']) || (data.updatedAt is string && data.updatedAt.size() <= 60)) &&
+             (!data.keys().hasAny(['customDeliveryCharges']) || (data.customDeliveryCharges is list && data.customDeliveryCharges.size() <= 200)) &&
+             (!data.keys().hasAny(['qaCache']) || (data.qaCache is list && data.qaCache.size() <= 1000));
+    }
+
+    function isValidReview(data) {
+      return data.websiteId is string && data.websiteId.size() <= 128 &&
+             data.productId is string && data.productId.size() <= 128 &&
+             data.customerName is string && data.customerName.size() <= 128 &&
+             data.customerEmail is string && data.customerEmail.size() <= 128 &&
+             data.rating is number && data.rating >= 1 && data.rating <= 5 &&
+             data.comment is string && data.comment.size() <= 2048 &&
+             (!data.keys().hasAny(['reply']) || (data.reply is string && data.reply.size() <= 2048));
+    }
+
+    function isValidCourierConfig(data) {
+      return data.userId is string && data.userId.size() <= 128 && 
+             (data.userId == request.auth.uid || hasDelegatedAccess(data.userId, 'allowOrders') || hasDelegatedAccess(data.userId, 'allowLandingPages')) &&
+             data.country is string && data.country.size() <= 100 &&
+             data.courierName is string && data.courierName.size() <= 100 &&
+             data.credentials is map &&
+             (!data.keys().hasAny(['updatedAt']) || (data.updatedAt is string && data.updatedAt.size() <= 60));
+    }
+
+    function isValidCatalogSubscription(data) {
+      return data.get('userId', '') is string && data.get('userId', '').size() > 0 && data.get('userId', '').size() <= 128 &&
+             data.get('paymentStatus', '') in ['trial', 'pending', 'approved'] &&
+             (!data.keys().hasAny(['trialStartedAt']) || (data.trialStartedAt is string && data.trialStartedAt.size() <= 100)) &&
+             (!data.keys().hasAny(['trialExpiresAt']) || (data.trialExpiresAt is string && data.trialExpiresAt.size() <= 100)) &&
+             (!data.keys().hasAny(['createdAt']) || (data.createdAt is string && data.createdAt.size() <= 100)) &&
+             (!data.keys().hasAny(['updatedAt']) || (data.updatedAt is string && data.updatedAt.size() <= 100)) &&
+             (!data.keys().hasAny(['selectedPlan']) || (data.selectedPlan is string && data.selectedPlan.size() <= 100)) &&
+             (!data.keys().hasAny(['selectedCurrency']) || (data.selectedCurrency is string && data.selectedCurrency.size() <= 20)) &&
+             (!data.keys().hasAny(['paymentPhone']) || (data.paymentPhone is string && data.paymentPhone.size() <= 50)) &&
+             (!data.keys().hasAny(['paymentTrxId']) || (data.paymentTrxId is string && data.paymentTrxId.size() <= 150)) &&
+             (!data.keys().hasAny(['paymentSubmittedAt']) || (data.paymentSubmittedAt is string && data.paymentSubmittedAt.size() <= 100)) &&
+             (!data.keys().hasAny(['activeUntil']) || (data.activeUntil is string && data.activeUntil.size() <= 100)) &&
+             (!data.keys().hasAny(['paymentApprovedAt']) || (data.paymentApprovedAt is string && data.paymentApprovedAt.size() <= 100));
+    }
+
+    // --- Collections ---
+
+    // USERS
+    match /users/{userId} {
+      allow get: if true; 
+      allow list: if isSignedIn();
+      allow create: if isOwner(userId) && isValidUser(incoming()) && incoming().email == request.auth.token.email && incoming().get('isAdmin', false) == false;
+      allow update: if isValidUser(incoming()) && (isOwner(userId) || isAdmin()) && (
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'name', 'profileImage', 'socialLinks', 'stats', 'address', 'country', 'phone', 
+          'businessName', 'storeName', 'coverImage', 'bio', 'isAdmin', 'tiktok', 'updatedAt', 'avatar', 'facebook', 'whatsapp', 'website',
+          'globalBotActive', 'dragonBotEnabled', 'subscriptions', 'lastActive'
+        ]) &&
+        (incoming().email == existing().email) && // Immutable email
+        (incoming().get('isAdmin', false) == existing().get('isAdmin', false) || isAdmin()) // Prevent self-escalation
+      );
+    }
+
+    match /users/{userId}/payment_accounts/{accountId} {
+      allow read, write: if isSignedIn() && (request.auth.uid == userId || isBasicAdmin());
+    }
+
+    // ORDERS
+    match /orders/{orderId} {
+      allow get: if (resource.data.get('receiverId', '') == 'customer_public' || resource.data.get('senderId', '') == 'customer_public') || 
+                    (isSignedIn() && (
+                      request.auth.uid == (resource.data.get('senderId', '')) || 
+                      request.auth.uid == (resource.data.get('receiverId', '')) || 
+                      hasDelegatedAccess(resource.data.get('senderId', ''), 'allowOrders') ||
+                      hasDelegatedAccess(resource.data.get('receiverId', ''), 'allowOrders') ||
+                      request.auth.uid in resource.data.get('participants', [])
+                    )) || 
+                    isAdmin();
+      
+      // Relaxed list for broad queries like on the dashboard/chatroom and server rate limit checks
+      allow list: if true;
+
+      allow create: if (
+        incoming().get('senderId', '') == 'customer_public' || 
+        incoming().get('receiverId', '') == 'customer_public' ||
+        (isSignedIn() && (
+          incoming().get('senderId', '') == request.auth.uid || 
+          hasDelegatedAccess(incoming().get('senderId', ''), 'allowOrders') || 
+          isAdmin()
+        ))
+      ) && isValidOrder(incoming());
+      allow update: if isValidOrder(incoming()) && (isSignedIn() && (
+        ((request.auth.uid == existing().get('senderId', '') || 
+          request.auth.uid == existing().get('receiverId', '') || 
+          hasDelegatedAccess(existing().get('senderId', ''), 'allowOrders') ||
+          hasDelegatedAccess(existing().get('receiverId', ''), 'allowOrders') ||
+          request.auth.uid in existing().get('participants', [])) && (
+            (existing().status == 'pending') || 
+            incoming().diff(existing()).affectedKeys().hasOnly(['status', 'courierDetails', 'updatedAt', 'courierName', 'courierTrackingId', 'courierNote', 'color', 'size', 'weight', 'isForwarded', 'forwardedToId', 'forwardedToName', 'forwardedFromId', 'forwardedFromName', 'originalOrderId', 'forwardedOrderId', 'courierBookedAt', 'courierRules', 'deliveryManName', 'deliveryManPhone', 'deliveryManAssigned', 'latitude', 'longitude'])
+          )) ||
+        isAdmin()
+      ));
+      allow delete: if isSignedIn() && (
+        request.auth.uid == resource.data.get('senderId', '') || 
+        request.auth.uid == resource.data.get('receiverId', '') || 
+        isAdmin()
+      );
+    }
+
+    // CHATS
+    match /chats/{chatId} {
+      allow get: if (isSignedIn() && (request.auth.uid in resource.data.participants)) || isAdmin();
+      allow list: if isSignedIn() && (request.auth.uid in resource.data.participants || isBasicAdmin());
+      allow create: if isSignedIn() && (request.auth.uid in incoming().participants) && isValidChat(incoming());
+      allow update: if isValidChat(incoming()) && (isSignedIn() && (request.auth.uid in existing().participants)) && (
+        incoming().diff(existing()).affectedKeys().hasOnly(['lastMessage', 'lastMessageAt', 'updatedAt', 'unreadCount', 'participants']) &&
+        (incoming().participants.hasAll(existing().participants) && 
+         incoming().participants.size() == existing().participants.size())
+      );
+
+      match /messages/{messageId} {
+        allow read, list, get: if isSignedIn();
+        allow create: if (
+          (isSignedIn() && (
+            chatId.matches('.*' + request.auth.uid + '.*') || 
+            (exists(/databases/$(database)/documents/chats/$(chatId)) && get(/databases/$(database)/documents/chats/$(chatId)).data.get('participants', []).hasAny([request.auth.uid]))
+          ))
+        ) && isValidMessage(incoming());
+        allow update: if isSignedIn() && (
+                        (exists(/databases/$(database)/documents/chats/$(chatId)) && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.get('participants', [])) || 
+                        isBasicAdmin()
+                      ) && (
+                        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'deliveredAt', 'seenAt']) ||
+                        (existing().get('type', '') == 'payment_request' && 
+                         incoming().get('paymentData', {}).get('status', '') == 'paid' && 
+                         incoming().get('paymentData', {}).get('trxId', '') != '') ||
+                        (existing().get('senderId', '') == request.auth.uid && 
+                         incoming().get('type', '') == 'deleted' && 
+                         isValidMessage(incoming()))
+                      );
+        allow delete: if isSignedIn() && (existing().get('senderId', '') == request.auth.uid || isAdmin());
+      }
+    }
+
+    // PRO WEBSITES
+    match /pro_websites/{siteId} {
+      allow get, list: if true;
+      allow create: if isSignedIn() && (incoming().get('userId', '') == request.auth.uid || hasDelegatedAccess(incoming().get('userId', ''), 'allowLandingPages')) && isValidProWebsite(incoming());
+      allow update, delete: if isOwnerOrAdmin(existing()) || hasDelegatedAccess(existing().get('userId', ''), 'allowLandingPages');
+
+      match /views/{viewId} {
+        allow list: if isBasicAdmin();
+        allow list: if isSignedIn() && resource.data.get('userId', '') == request.auth.uid;
+        allow list: if isSignedIn() && exists(/databases/$(database)/documents/pro_websites/$(siteId)) && get(/databases/$(database)/documents/pro_websites/$(siteId)).data.get('userId', '') == request.auth.uid;
+        allow list: if isSignedIn() && exists(/databases/$(database)/documents/pro_websites/$(siteId)) && hasDelegatedAccess(get(/databases/$(database)/documents/pro_websites/$(siteId)).data.get('userId', ''), 'allowLandingPages');
+        
+        allow get: if isSignedIn() && (
+          isBasicAdmin() ||
+          resource.data.get('userId', '') == request.auth.uid ||
+          (exists(/databases/$(database)/documents/pro_websites/$(siteId)) && (
+            get(/databases/$(database)/documents/pro_websites/$(siteId)).data.get('userId', '') == request.auth.uid ||
+            hasDelegatedAccess(get(/databases/$(database)/documents/pro_websites/$(siteId)).data.get('userId', ''), 'allowLandingPages')
+          ))
+        );
+        allow create, update: if true; // Public can submit views
+      }
+    }
+
+    // LANDING PAGES
+    match /landing-pages/{pageId} {
+      allow get: if true; // Publicly viewable
+      allow list: if isSignedIn() || isBasicAdmin();
+      allow create: if isSignedIn() && (incoming().get('userId', '') == request.auth.uid || hasDelegatedAccess(incoming().get('userId', ''), 'allowLandingPages')) && isValidLandingPage(incoming());
+      allow update: if (isOwnerOrAdmin(existing()) || hasDelegatedAccess(existing().get('userId', ''), 'allowLandingPages')) && isValidLandingPage(incoming());
+      allow delete: if isOwnerOrAdmin(existing()) || hasDelegatedAccess(existing().get('userId', ''), 'allowLandingPages');
+
+      match /views/{viewId} {
+        allow read, list, get: if isSignedIn() || isBasicAdmin();
+        allow create, update: if true; // Public can submit views
+      }
+    }
+
+    // INVENTORY
+    match /inventory/{itemId} {
+      allow read, list: if true;
+      allow create: if isSignedIn() && (incoming().get('userId', '') == request.auth.uid || hasDelegatedAccess(incoming().get('userId', ''), 'allowInventory')) && isValidInventory(incoming());
+      allow update, delete: if isOwnerOrAdmin(existing()) || hasDelegatedAccess(existing().get('userId', ''), 'allowInventory');
+    }
+
+    // DELEGATED ACCESS
+    match /delegated_access/{docId} {
+      allow read, list, get: if isSignedIn();
+      allow create: if isSignedIn() && incoming().get('grantorId', '') == request.auth.uid;
+      allow update: if isSignedIn() && (existing().get('grantorId', '') == request.auth.uid || existing().get('granteeId', '') == request.auth.uid);
+      allow delete: if isSignedIn() && (existing().get('grantorId', '') == request.auth.uid || existing().get('granteeId', '') == request.auth.uid);
+    }
+
+    // COUPONS
+    match /coupons/{couponId} {
+      allow read, list, get: if isSignedIn() || isAdmin();
+      allow create: if isSignedIn() && incoming().get('userId', '') == request.auth.uid;
+      allow update, delete: if isSignedIn() && (existing().get('userId', '') == request.auth.uid || isAdmin());
+    }
+
+    // MERCHANT CATEGORIES
+    match /merchant_categories/{categoryId} {
+      allow read, list: if isSignedIn();
+      allow create, update, delete: if isSignedIn();
+    }
+
+    // AD PERFORMANCE
+    match /ad_performance/{perfId} {
+      allow read, list, get: if isSignedIn() || isAdmin();
+      allow create: if isSignedIn() && incoming().get('userId', '') == request.auth.uid;
+      allow update, delete: if isSignedIn() && (existing().get('userId', '') == request.auth.uid || isAdmin());
+    }
+
+    // MAGIC BOX
+    match /magic_box/{configId} {
+      allow read, list, get: if isSignedIn() || isAdmin();
+      allow create: if isSignedIn() && (incoming().get('userId', '') == request.auth.uid || hasDelegatedAccess(incoming().get('userId', ''), 'allowOrders') || hasDelegatedAccess(incoming().get('userId', ''), 'allowLandingPages'));
+      allow update, delete: if isSignedIn() && (existing().get('userId', '') == request.auth.uid || hasDelegatedAccess(existing().get('userId', ''), 'allowOrders') || hasDelegatedAccess(existing().get('userId', ''), 'allowLandingPages') || isAdmin());
+    }
+
+    // GLOBAL SETTINGS
+    match /global_settings/{settingId} {
+      allow read, list, get: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // FRAUD REPORTS
+    match /fraud_reports/{reportId} {
+      allow read, list: if isSignedIn();
+      allow create: if isSignedIn() && incoming().reporterId == request.auth.uid;
+    }
+
+    // FRAUD BLACKLIST
+    match /fraud_blacklist/{blacklistId} {
+      allow read, list, get: if isSignedIn() || isAdmin();
+      allow create, update: if true;
+      allow delete: if isSignedIn() || isAdmin();
+    }
+
+    // COMMUNITY POSTS
+    match /community_posts/{postId} {
+      allow read, list: if isSignedIn();
+      allow create: if isSignedIn() && incoming().get('userId', '') == request.auth.uid;
+      allow update: if isSignedIn() && (resource.data.get('userId', '') == request.auth.uid || isAdmin() || incoming().diff(existing()).affectedKeys().hasOnly(['likes', 'likesCount', 'favorites', 'favoritesCount']));
+      allow delete: if isSignedIn() && (resource.data.get('userId', '') == request.auth.uid || isAdmin());
+    }
+
+    // COMMUNITY COMMENTS
+    match /community_comments/{commentId} {
+      allow read, list: if isSignedIn();
+      allow create: if isSignedIn() && incoming().get('userId', '') == request.auth.uid;
+      allow update, delete: if isSignedIn() && (resource.data.get('userId', '') == request.auth.uid || isAdmin());
+    }
+
+    // COLLABORATION REQUESTS
+    match /collab_requests/{requestId} {
+      allow read, list: if isSignedIn();
+      allow create: if isSignedIn() && incoming().get('senderId', '') == request.auth.uid;
+      allow update: if isSignedIn() && (resource.data.get('senderId', '') == request.auth.uid || resource.data.get('receiverId', '') == request.auth.uid);
+      allow delete: if isSignedIn() && (resource.data.get('senderId', '') == request.auth.uid || resource.data.get('receiverId', '') == request.auth.uid || isAdmin());
+    }
+
+    // SOCIAL NOTIFICATIONS
+    match /social_notifications/{notificationId} {
+      allow read, list, get: if isSignedIn();
+      allow create: if isSignedIn() && incoming().get('triggerUserId', '') == request.auth.uid;
+      allow update, delete: if isSignedIn() && (resource.data.get('postOwnerId', '') == request.auth.uid || resource.data.get('triggerUserId', '') == request.auth.uid || isAdmin());
+    }
+
+    // SOCIAL RELATIONSHIPS
+    match /social_relationships/{relationshipId} {
+      allow read, list: if isSignedIn();
+      allow create: if isSignedIn() && incoming().get('followerId', '') == request.auth.uid;
+      allow delete: if isSignedIn() && (resource.data.get('followerId', '') == request.auth.uid || isAdmin());
+    }
+
+    // TEST CONNECTION
+    match /test/connection {
+      allow read: if true;
+    }
+
+    // AUDIO CALLS REALTIME SIGNALING
+    match /calls/{callId} {
+      allow read, write: if isSignedIn();
+      
+      match /candidates/{candidateId} {
+        allow read, write: if isSignedIn();
+      }
+    }
+
+    // CALL MUTES
+    match /call_mutes/{muteId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // SITE CHATS (Dragon Site Messenger chats)
+    match /site_chats/{siteChatId} {
+      allow read, write, create, update: if true;
+    }
+
+    // UNIVERSAL CHAT LOGS
+    match /universal_chat_logs/{logId} {
+      allow read, write, create: if true;
+    }
+
+    // HIDDEN MERCHANT FILES
+    match /hidden_merchant_files/{targetUserId} {
+      allow get: if true;
+      allow list: if isSignedIn() && (targetUserId == request.auth.uid || hasDelegatedAccess(targetUserId, 'allowLandingPages') || isBasicAdmin());
+      allow create: if isValidId(targetUserId) && (incoming().userId == targetUserId) && isValidHiddenMerchantFile(incoming());
+      allow update: if isValidId(targetUserId) && (incoming().userId == targetUserId) && isValidHiddenMerchantFile(incoming());
+      allow delete: if isSignedIn() && isValidId(targetUserId) && (targetUserId == request.auth.uid || isBasicAdmin());
+    }
+
+    // COURIER CONFIGS
+    match /courier_configs/{configId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && (request.resource == null || incoming().userId == request.auth.uid || hasDelegatedAccess(incoming().userId, 'allowOrders') || hasDelegatedAccess(incoming().userId, 'allowLandingPages') || isBasicAdmin());
+    }
+
+    // CATALOG SUBSCRIPTIONS
+    match /catalog_subscriptions/{userId} {
+      allow read: if true;
+      allow create: if isSignedIn() && (userId == request.auth.uid || hasDelegatedAccess(userId, 'allowInventory') || hasDelegatedAccess(userId, 'allowLandingPages')) && isValidCatalogSubscription(incoming());
+      allow update: if isSignedIn() && (userId == request.auth.uid || hasDelegatedAccess(userId, 'allowInventory') || hasDelegatedAccess(userId, 'allowLandingPages') || isAdmin()) && isValidCatalogSubscription(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // PRODUCT REVIEWS
+    match /product_reviews/{reviewId} {
+      allow get, list: if true;
+      allow create: if isSignedIn() && isValidReview(incoming()) && incoming().customerEmail == request.auth.token.email;
+      allow update, delete: if isSignedIn() && (
+        (exists(/databases/$(database)/documents/pro_websites/$(existing().websiteId)) && 
+         get(/databases/$(database)/documents/pro_websites/$(existing().websiteId)).data.get('userId', '') == request.auth.uid) ||
+        isBasicAdmin()
+      );
+    }
+  }
+}
